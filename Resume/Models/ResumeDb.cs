@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Resume.Migrations;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -12,5 +13,10 @@ namespace Resume.Models
         public DbSet<Position> Positions { get; set; }
         public DbSet<Responsibility> Responsibilities { get; set; }
         public DbSet<Tag> Tags { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            Database.SetInitializer(new MigrateDatabaseToLatestVersion<ResumeDb, Configuration>());
+        }
     }
 }
