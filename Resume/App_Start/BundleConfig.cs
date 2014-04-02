@@ -26,9 +26,9 @@ namespace Resume
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/site.css"));
 
-            bundles.Add(new LessBundle("~/Content/bootstrap").Include("~/Content/bootstrap/bootstrap.less"));
+            bundles.Add(new LessBundle("~/bundles/bootstrap").Include("~/Content/bootstrap/bootstrap.less"));
 
-            bundles.Add(new LessBundle("~/Content/less").Include("~/Content/*.less"));
+            bundles.Add(new LessBundle("~/bundles/less").Include("~/Content/*.less"));
         }
     }
 }
