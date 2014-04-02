@@ -14,6 +14,12 @@ namespace Resume.Models
         public DbSet<Responsibility> Responsibilities { get; set; }
         public DbSet<Tag> Tags { get; set; }
 
+        public ResumeDb()
+            : base("DefaultConnection")
+        {
+        }
+
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             Database.SetInitializer(new MigrateDatabaseToLatestVersion<ResumeDb, Configuration>());
