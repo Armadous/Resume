@@ -24,11 +24,11 @@ namespace Resume
                       "~/Scripts/respond.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/site.css"));
+                      "~/Content/theming/site.css"));
 
-            bundles.Add(new LessBundle("~/bundles/bootstrap").Include("~/Content/bootstrap/bootstrap.less"));
+            bundles.Add(new LessBundle("~/less/bootstrap").Include("~/Content/bootstrap/bootstrap.less"));
 
-            bundles.Add(new LessBundle("~/bundles/less").Include("~/Content/*.less"));
+            bundles.Add(new LessBundle("~/less").Include("~/Content/theming/test.less"));
         }
     }
 }
