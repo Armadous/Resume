@@ -23,12 +23,17 @@ namespace Resume
                       "~/Scripts/bootstrap.js",
                       "~/Scripts/respond.js"));
 
-            bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/theming/site.css"));
+            bundles.Add(new ScriptBundle("~/bundles/knockout").Include(
+                "~/Scripts/knockout-3.1.0.js"));
 
-            bundles.Add(new LessBundle("~/less/bootstrap").Include("~/Content/bootstrap/bootstrap.less"));
+            bundles.Add(new ScriptBundle("~/bundles/models").Include(
+                "~/Scripts/models/*.js"));
 
-            bundles.Add(new LessBundle("~/less").Include("~/Content/theming/test.less"));
+            bundles.Add(new LessBundle("~/less/bootstrap").Include(
+                "~/Content/bootstrap/bootstrap.less"));
+
+            bundles.Add(new LessBundle("~/less/theme").Include(
+                "~/Content/theming/Site.less"));
         }
     }
 }

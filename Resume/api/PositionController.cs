@@ -36,6 +36,20 @@ namespace Resume.api
             return Ok(position);
         }
 
+        // GET api/Position/5
+        [Route("api/position/{id}/responsibilities")]
+        [ResponseType(typeof(List<Responsibility>))]
+        public IHttpActionResult GetResponsibilities(int id)
+        {
+            var position = db.Positions.Find(id);
+            if (position == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(position.Responsibilities.ToList());
+        }
+
         // PUT api/Position/5
         public IHttpActionResult PutPosition(int id, Position position)
         {

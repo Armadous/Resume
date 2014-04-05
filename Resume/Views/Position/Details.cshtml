@@ -52,7 +52,38 @@
 
     </dl>
 </div>
+<ul data-bind="foreach: responsibilities">
+    <li>
+        <H3 data-bind="text: Name"></H3>
+        <p data-bind="text: Description"></p>
+    </li>
+</ul>
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.PositionId }) |
     @Html.ActionLink("Back to List", "Index")
 </p>
+
+<pre data-bind="text: ko.toJSON($root, null, 2)"></pre>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/knockout")
+    @Scripts.Render("~/Scripts/models/responsibility.js")
+    <script>
+        function PositionViewModel() {
+            var self = this;
+
+            self.responsibilities = ko.observableArray([]);
+
+            var positionData = $.getJSON("/api/position/@Model.PositionId/responsibilities", function (data) {
+                //DO STUFF WITH DATA
+                $.each(data, function (index, item) {
+                    self.responsibilities.push(new Responsibility(item));
+                });
+            });
+        }
+
+        ko.applyBindings(new PositionViewModel());
+    </script>
+}

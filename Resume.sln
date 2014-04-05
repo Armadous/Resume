@@ -7,6 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Resume", "Resume\Resume.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Resume.Tests", "Resume.Tests\Resume.Tests.csproj", "{EA21F62E-2DD9-4495-B0E5-A0E21D490F76}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assets", "Assets", "{C6862EA1-C204-42C1-AB4F-F2CB6600C007}"
+	ProjectSection(SolutionItems) = preProject
+		Assets\Theme.psd = Assets\Theme.psd
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
