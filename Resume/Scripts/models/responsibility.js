@@ -1,5 +1,7 @@
 ﻿function Responsibility(responsibility) {
-    this.Name = ko.observable(responsibility.Name);
-    this.Description = ko.observable(responsibility.Description);
-    this.PositionId = ko.observable(responsibility.PositionId);
+    var self = this;
+
+    self.Name = ko.observable(responsibility.Name);
+    self.Description = ko.observable(responsibility.Description);
+    self.PositionId = ko.observable(responsibility.PositionId);
 }

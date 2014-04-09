@@ -52,38 +52,74 @@
 
     </dl>
 </div>
-<ul data-bind="foreach: responsibilities">
+<form data-bind="submit: addResponsibility">
+    <input type="text" name="name" data-bind="value: newResponsibility.Name" />
+    <input type="text" name="description" data-bind="value: newResponsibility.Description" />
+    <button type="submit">Add</button>
+</form>
+<ul data-bind=" foreach: responsibilities">
     <li>
-        <H3 data-bind="text: Name"></H3>
+        <h3 data-bind="text: Name"></h3>
         <p data-bind="text: Description"></p>
     </li>
 </ul>
+
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.PositionId }) |
     @Html.ActionLink("Back to List", "Index")
 </p>
 
-<pre data-bind="text: ko.toJSON($root, null, 2)"></pre>
+<pre data-bind="text: debugJson"></pre>
 
 
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-    @Scripts.Render("~/bundles/knockout")
-    @Scripts.Render("~/Scripts/models/responsibility.js")
-    <script>
-        function PositionViewModel() {
-            var self = this;
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+        @Scripts.Render("~/bundles/knockout")
+        @Scripts.Render("~/Scripts/models/responsibility.js")
+        <script>
+    function PositionViewModel() {
+        var self = this;
 
-            self.responsibilities = ko.observableArray([]);
+        self.responsibilities = ko.observableArray([]);
 
-            var positionData = $.getJSON("/api/position/@Model.PositionId/responsibilities", function (data) {
-                //DO STUFF WITH DATA
-                $.each(data, function (index, item) {
-                    self.responsibilities.push(new Responsibility(item));
+        self.newResponsibility = ko.observable(new Responsibility({ Name: "", Description: "", PositionId: @Model.PositionId }));
+
+        self.debugJson = ko.observable();
+
+        var positionData = $.getJSON("/api/position/@Model.PositionId/responsibilities", function (data) {
+                    //DO STUFF WITH DATA
+                    var mapped = $.map(data, function (item) { return new Responsibility(item) });
+                    self.responsibilities(mapped);
                 });
-            });
-        }
 
-        ko.applyBindings(new PositionViewModel());
-    </script>
-}
+        self.addResponsibility = function (element) {
+            self.newResponsibility().Name(element.name.value);
+            self.newResponsibility().Description(element.description.value);
+            this.debugJson(ko.toJSON(self.newResponsibility));
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    url: "/api/Responsibility",
+                    data: ko.toJSON(self.newResponsibility),
+                    success: function (data) {
+                        alert(data);
+                    },
+                    error: function (error) {
+                        jsonValue = jQuery.parseJSON(error.responseText);
+                        //jError('An error has occurred while saving the new part source: ' + jsonValue, { TimeShown: 3000 });
+                    }
+                });
+
+                    self.responsibilities.push(new Responsibility(self.newResponsibility));
+                    self.newResponsibility(new Responsibility({ Name: "", Description: "", PositionId: @Model.PositionId }));
+                };
+
+                self.updateResponsibility = function (item) {
+                    //TODO: Find the updated item and updated it.
+                }
+            }
+
+            ko.applyBindings(new PositionViewModel());
+        </script>
+    }
