@@ -21,7 +21,9 @@ namespace Resume
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            BootstrapEditorTemplatesConfig.RegisterBundles();
 
+            // Settings to keep web api from freaking out when returning EF classes.
             var jsonFormatter = new JsonMediaTypeFormatter();
             jsonFormatter.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             jsonFormatter.SerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.None;

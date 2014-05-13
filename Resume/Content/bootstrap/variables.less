@@ -13,11 +13,9 @@
 @gray-light:             lighten(#000, 60%);   // #999
 @gray-lighter:           lighten(#000, 93.5%); // #eee
 
-@import "../theming/Colors.less";
-
-@brand-primary:         @foreground;
-@brand-success:         @primary;
-@brand-info:            @secondary;
+@brand-primary:         #428bca;
+@brand-success:         #5cb85c;
+@brand-info:            #5bc0de;
 @brand-warning:         #f0ad4e;
 @brand-danger:          #d9534f;
 
@@ -68,7 +66,6 @@
 @headings-font-weight:    500;
 @headings-line-height:    1.1;
 @headings-color:          inherit;
-
 
 
 //-- Iconography
@@ -459,8 +456,8 @@
 //##
 
 @jumbotron-padding:              30px;
-@jumbotron-color:                @primary-dark;
-@jumbotron-bg:                   @primary;
+@jumbotron-color:                inherit;
+@jumbotron-bg:                   @gray-lighter;
 @jumbotron-heading-color:        inherit;
 @jumbotron-font-size:            ceil((@font-size-base * 1.5));
 
@@ -551,9 +548,9 @@
 @label-danger-bg:             @brand-danger;
 
 // Default label text color
-@label-color:                 @foreground;
+@label-color:                 #fff;
 // Default text color of a linked label
-@label-link-hover-color:      @highlight;
+@label-link-hover-color:      #fff;
 
 
 //== Modals

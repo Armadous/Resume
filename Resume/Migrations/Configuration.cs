@@ -35,7 +35,7 @@ namespace Resume.Migrations
                 // Position One
                 var samplePositionOne = new Position()
                 {
-                    Name = "CEO",
+                    Title = "CEO",
                     Company = "Circut City",
                     Description = "Played golf and drank Mojitos.",
                     StartDate = DateTime.Now.AddYears(-10),
@@ -62,7 +62,7 @@ namespace Resume.Migrations
                 // Position Two
                 var samplePositionTwo = new Position()
                 {
-                    Name = "Fry Cook",
+                    Title = "Fry Cook",
                     Company = "Joes Fry Shack",
                     Description = "Cookied lots of fries",
                     StartDate = DateTime.Now.AddYears(-1),
