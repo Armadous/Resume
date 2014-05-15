@@ -52,17 +52,32 @@
 
     </dl>
 </div>
-<form data-bind="submit: addResponsibility">
-    <input type="text" name="name" data-bind="value: newResponsibility.Name" />
-    <input type="text" name="description" data-bind="value: newResponsibility.Description" />
-    <button type="submit">Add</button>
-</form>
 <ul data-bind=" foreach: responsibilities">
     <li>
         <h3 data-bind="text: Name"></h3>
         <p data-bind="text: Description"></p>
     </li>
 </ul>
+<form data-bind="submit: addResponsibility">
+    <div class="form-horizontal well">
+        <fieldset>
+            <legend>Add Responsibility</legend>
+            <div class="form-group">
+                <div class="col-md-4">
+                    <span class="control-label">Experience</span>
+                    <input type="text" class="form-control" name="name" data-bind="value: newResponsibility.Name" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-6">
+                    <span class="control-label">Description</span>
+                    <textarea class="form-control" rows="3" name="description" data-bind="value: newResponsibility.Description"></textarea>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Add</button>
+        </fieldset>
+    </div>
+</form>
 
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.PositionId }) |
@@ -103,7 +118,8 @@
                     url: "/api/Responsibility",
                     data: ko.toJSON(self.newResponsibility),
                     success: function (data) {
-                        alert(data);
+                        self.newResponsibility.Name("taco");
+                        self.newResponsibility.Description("");
                     },
                     error: function (error) {
                         jsonValue = jQuery.parseJSON(error.responseText);
@@ -113,13 +129,13 @@
 
                     self.responsibilities.push(new Responsibility(self.newResponsibility));
                     self.newResponsibility(new Responsibility({ Name: "", Description: "", PositionId: @Model.PositionId }));
-                };
+        };
 
-                self.updateResponsibility = function (item) {
-                    //TODO: Find the updated item and updated it.
-                }
-            }
+        self.updateResponsibility = function (item) {
+            //TODO: Find the updated item and updated it.
+        }
+    }
 
-            ko.applyBindings(new PositionViewModel());
+    ko.applyBindings(new PositionViewModel());
         </script>
     }

@@ -10,107 +10,112 @@ using Resume.Models;
 
 namespace Resume.Controllers
 {
-    public class PositionController : Controller
+    public class ResponsibilityController : Controller
     {
         private ResumeDb db = new ResumeDb();
 
-        // GET: /Position/
+        // GET: /Responsibility/
         public ActionResult Index()
         {
-            return View(db.Positions.OrderBy(n => n.StartDate).ToList());
+            var responsibilities = db.Responsibilities.Include(r => r.Position);
+            return View(responsibilities.ToList());
         }
 
-        // GET: /Position/Details/5
+        // GET: /Responsibility/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Position position = db.Positions.Find(id);
-            if (position == null)
+            Responsibility responsibility = db.Responsibilities.Find(id);
+            if (responsibility == null)
             {
                 return HttpNotFound();
             }
-            return View(position);
+            return View(responsibility);
         }
 
-        // GET: /Position/Create
+        // GET: /Responsibility/Create
         public ActionResult Create()
         {
+            ViewBag.PositionId = new SelectList(db.Positions, "PositionId", "Title");
             return View();
         }
 
-        // POST: /Position/Create
+        // POST: /Responsibility/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include="PositionId,Title,Description,Company,StartDate,EndDate")] Position position)
+        public ActionResult Create([Bind(Include="ResponsibilityId,Name,Description,Percentage,PositionId")] Responsibility responsibility)
         {
             if (ModelState.IsValid)
             {
-                db.Positions.Add(position);
+                db.Responsibilities.Add(responsibility);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            return View(position);
+            ViewBag.PositionId = new SelectList(db.Positions, "PositionId", "Title", responsibility.PositionId);
+            return View(responsibility);
         }
 
-        // GET: /Position/Edit/5
+        // GET: /Responsibility/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Position position = db.Positions.Find(id);
-            if (position == null)
+            Responsibility responsibility = db.Responsibilities.Find(id);
+            if (responsibility == null)
             {
                 return HttpNotFound();
             }
-            return View(position);
+            ViewBag.PositionId = new SelectList(db.Positions, "PositionId", "Title", responsibility.PositionId);
+            return View(responsibility);
         }
 
-        // POST: /Position/Edit/5
+        // POST: /Responsibility/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "PositionId,Title,Description,Company,StartDate,EndDate")] Position position)
+        public ActionResult Edit([Bind(Include="ResponsibilityId,Name,Description,Percentage,PositionId")] Responsibility responsibility)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(position).State = EntityState.Modified;
+                db.Entry(responsibility).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(position);
+            ViewBag.PositionId = new SelectList(db.Positions, "PositionId", "Title", responsibility.PositionId);
+            return View(responsibility);
         }
 
-        // GET: /Position/Delete/5
+        // GET: /Responsibility/Delete/5
         public ActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Position position = db.Positions.Find(id);
-            if (position == null)
+            Responsibility responsibility = db.Responsibilities.Find(id);
+            if (responsibility == null)
             {
                 return HttpNotFound();
             }
-            return View(position);
+            return View(responsibility);
         }
 
-        // POST: /Position/Delete/5
+        // POST: /Responsibility/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Position position = db.Positions.Find(id);
-            db.Positions.Remove(position);
+            Responsibility responsibility = db.Responsibilities.Find(id);
+            db.Responsibilities.Remove(responsibility);
             db.SaveChanges();
             return RedirectToAction("Index");
         }
