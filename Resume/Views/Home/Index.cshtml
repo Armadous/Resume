@@ -5,3 +5,49 @@
 <div class="jumbotron">
     <h1>Joshua Slaven</h1>    
 </div>
+
+<div id="respnsies">
+    <ul data-bind="foreach: positions">
+        <li>
+            <h3 data-bind="text: Title"></h3>
+            <p data-bind="text: Company"></p>
+            <p data-bind="text: Description"></p>
+        </li>
+    </ul>
+</div>
+
+
+@section Scripts {
+    <script type="text/javascript">
+        var Position = Backbone.Model.extend();
+
+        var Positions = Backbone.Collection.extend({
+            model: Position,
+            url: '/api/position',
+
+            initialize: function () {
+                this.fetch({
+                    success: this.fetchSuccess,
+                    error: this.fetchError
+                });
+            },
+
+            fetchSuccess: function (collection, response) {
+                console.log('Collection fetch success', response);
+                console.log('Collection models: ', collection.models);
+            },
+
+            fetchError: function (collection, response) {
+                throw new Error("Fetch error " + response);
+            }
+        });
+
+        var pos_view_model = {
+            positions: kb.collectionObservable(new Positions)
+        };
+
+        ko.applyBindings(pos_view_model, $('#respnsies')[0]);
+
+
+    </script>
+    }
