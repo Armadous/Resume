@@ -212,6 +212,10 @@
     <Compile Include="Migrations\201404051849457_PocoRelationIds.Designer.cs">
       <DependentUpon>201404051849457_PocoRelationIds.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201405220743595_PositionRename.cs" />
+    <Compile Include="Migrations\201405220743595_PositionRename.Designer.cs">
+      <DependentUpon>201405220743595_PositionRename.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Responsibility.cs" />
@@ -766,6 +770,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201404051849457_PocoRelationIds.resx">
       <DependentUpon>201404051849457_PocoRelationIds.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201405220743595_PositionRename.resx">
+      <DependentUpon>201405220743595_PositionRename.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
