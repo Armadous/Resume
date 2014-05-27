@@ -191,6 +191,7 @@
   <ItemGroup>
     <Compile Include="api\PositionController.cs" />
     <Compile Include="api\ResponsibilityController.cs" />
+    <Compile Include="api\UserFileController.cs" />
     <Compile Include="App_Start\BootstrapEditorTemplatesConfig.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
@@ -201,6 +202,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PositionController.cs" />
     <Compile Include="Controllers\ResponsibilityController.cs" />
+    <Compile Include="Controllers\SkillController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -216,6 +218,14 @@
     <Compile Include="Migrations\201405220743595_PositionRename.Designer.cs">
       <DependentUpon>201405220743595_PositionRename.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201405240513261_SkillImage.cs" />
+    <Compile Include="Migrations\201405240513261_SkillImage.Designer.cs">
+      <DependentUpon>201405240513261_SkillImage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201405270515507_UserFile.cs" />
+    <Compile Include="Migrations\201405270515507_UserFile.Designer.cs">
+      <DependentUpon>201405270515507_UserFile.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Responsibility.cs" />
@@ -224,6 +234,7 @@
     <Compile Include="Models\Position.cs" />
     <Compile Include="Models\ResumeDb.cs" />
     <Compile Include="Models\Tag.cs" />
+    <Compile Include="Models\UserFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Utility\DateTimeExtensions.cs" />
@@ -756,9 +767,14 @@
     <Content Include="Views\Responsibility\Details.cshtml" />
     <Content Include="Views\Responsibility\Edit.cshtml" />
     <Content Include="Views\Responsibility\Index.cshtml" />
+    <Content Include="Views\Skill\Create.cshtml" />
+    <Content Include="Views\Skill\Delete.cshtml" />
+    <Content Include="Views\Skill\Details.cshtml" />
+    <Content Include="Views\Skill\Edit.cshtml" />
+    <Content Include="Views\Skill\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
+    <Folder Include="App_Data\userfiles\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -773,6 +789,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201405220743595_PositionRename.resx">
       <DependentUpon>201405220743595_PositionRename.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201405240513261_SkillImage.resx">
+      <DependentUpon>201405240513261_SkillImage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201405270515507_UserFile.resx">
+      <DependentUpon>201405270515507_UserFile.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

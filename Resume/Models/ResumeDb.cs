@@ -13,6 +13,7 @@ namespace Resume.Models
         public DbSet<Position> Positions { get; set; }
         public DbSet<Responsibility> Responsibilities { get; set; }
         public DbSet<Tag> Tags { get; set; }
+        public DbSet<UserFile> UserFiles { get; set; }
 
         public ResumeDb()
             : base("DefaultConnection")
