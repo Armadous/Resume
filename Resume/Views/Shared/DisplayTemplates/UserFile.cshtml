@@ -1,0 +1,6 @@
+﻿@using Resume.Utility
+@model Resume.Models.UserFile
+
+@if (Model.ContentType.Contains("image")) {
+    <img src='@Url.Content(String.Format("~/api/UserFile/{0}", Model.UserFileId))'>
+}

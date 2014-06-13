@@ -226,13 +226,33 @@
     <Compile Include="Migrations\201405270515507_UserFile.Designer.cs">
       <DependentUpon>201405270515507_UserFile.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201406110237228_SkillUserFileIds.cs" />
+    <Compile Include="Migrations\201406110237228_SkillUserFileIds.Designer.cs">
+      <DependentUpon>201406110237228_SkillUserFileIds.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201406110311183_SkillIconForeignKeyAnnotations.cs" />
+    <Compile Include="Migrations\201406110311183_SkillIconForeignKeyAnnotations.Designer.cs">
+      <DependentUpon>201406110311183_SkillIconForeignKeyAnnotations.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201406110325271_SkillIconsNullable.cs" />
+    <Compile Include="Migrations\201406110325271_SkillIconsNullable.Designer.cs">
+      <DependentUpon>201406110325271_SkillIconsNullable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201406112353550_RemoveSkills.cs" />
+    <Compile Include="Migrations\201406112353550_RemoveSkills.Designer.cs">
+      <DependentUpon>201406112353550_RemoveSkills.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201406112356011_ReSkill.cs" />
+    <Compile Include="Migrations\201406112356011_ReSkill.Designer.cs">
+      <DependentUpon>201406112356011_ReSkill.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Responsibility.cs" />
-    <Compile Include="Models\Skill.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\Position.cs" />
     <Compile Include="Models\ResumeDb.cs" />
+    <Compile Include="Models\Skill.cs" />
     <Compile Include="Models\Tag.cs" />
     <Compile Include="Models\UserFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -772,6 +792,8 @@
     <Content Include="Views\Skill\Details.cshtml" />
     <Content Include="Views\Skill\Edit.cshtml" />
     <Content Include="Views\Skill\Index.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\UserFile.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\UserFile.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\userfiles\" />
@@ -795,6 +817,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201405270515507_UserFile.resx">
       <DependentUpon>201405270515507_UserFile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201406110237228_SkillUserFileIds.resx">
+      <DependentUpon>201406110237228_SkillUserFileIds.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201406110311183_SkillIconForeignKeyAnnotations.resx">
+      <DependentUpon>201406110311183_SkillIconForeignKeyAnnotations.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201406110325271_SkillIconsNullable.resx">
+      <DependentUpon>201406110325271_SkillIconsNullable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201406112353550_RemoveSkills.resx">
+      <DependentUpon>201406112353550_RemoveSkills.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201406112356011_ReSkill.resx">
+      <DependentUpon>201406112356011_ReSkill.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

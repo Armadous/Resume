@@ -78,20 +78,20 @@ namespace Resume.Migrations
                 };
                 samplePositionTwo.Responsibilities.Add(grillResponsibility);
 
-                //Some skills
-                var cocktailSkill = new Skill()
-                {
-                    Name = "Cocktail Mixer",
-                    Description = "I make a mean Old-fashioned",
-                    Level = 100
-                };
+                ////Some skills
+                //var cocktailSkill = new Skill()
+                //{
+                //    Name = "Cocktail Mixer",
+                //    Description = "I make a mean Old-fashioned",
+                //    Level = 100
+                //};
 
-                var retailSkill = new Skill()
-                {
-                    Name = "Retail",
-                    Description = "I sell like a boss",
-                    Level = 5
-                };
+                //var retailSkill = new Skill()
+                //{
+                //    Name = "Retail",
+                //    Description = "I sell like a boss",
+                //    Level = 5
+                //};
             }
         }
     }

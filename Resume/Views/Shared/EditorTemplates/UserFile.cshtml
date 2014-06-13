@@ -1,0 +1,31 @@
+﻿@using Resume.Utility
+@model object
+
+<div class="form-group@(Html.ValidationErrorFor(m => m, " has-error"))">
+    <img src='@Url.Content(String.Format("~/api/UserFile/{0}", Model))' id='@(ViewData.TemplateInfo.HtmlFieldPrefix)preview' />
+    @Html.LabelFor(m => m, new { @class = "control-label" })
+    @Html.HiddenFor(m => m, new { id = ViewData.TemplateInfo.HtmlFieldPrefix + "iconid" })
+    <input name="@(ViewData.TemplateInfo.HtmlFieldPrefix)icon" type="file" id="@(ViewData.TemplateInfo.HtmlFieldPrefix)uploadbtn" class="btn-default btn-file" />
+    @Html.ValidationMessageFor(m => m, null, new { @class = "help-block" })
+    <input type="button" value="Upload" onclick="@(ViewData.TemplateInfo.HtmlFieldPrefix)upload()" class="btn btn-default" />
+</div>
+
+<script type="text/javascript">
+    function @(ViewData.TemplateInfo.HtmlFieldPrefix)upload() {
+        var file = $('#@(ViewData.TemplateInfo.HtmlFieldPrefix)uploadbtn')[0].files[0];
+        var formData = new FormData();
+        formData.append('file', file);
+        $.ajax({
+            url: '@Url.Content("~/api/UserFile")',
+            type: 'POST',
+            data: formData,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (fileInfo) {
+                $('#@(ViewData.TemplateInfo.HtmlFieldPrefix)preview').attr("src", '@Url.Content("~/api/UserFile/")' + fileInfo.UserFileId);
+                $('#@(ViewData.TemplateInfo.HtmlFieldPrefix)iconid').val(fileInfo.UserFileId);
+            }
+        });
+    }
+</script>

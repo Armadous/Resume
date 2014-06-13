@@ -17,13 +17,23 @@ namespace Resume.Models
         public float Level { get; set; }
 
         //64x64
-        public UserFile SmallIcon { get; set; }
+        [ForeignKey("SmallIconId")]
+        public virtual UserFile SmallIcon { get; set; }
+
+        public int? SmallIconId { get; set; }
 
         //128x128
-        public UserFile MediumIcon { get; set; }
+        [ForeignKey("MediumIconId")]
+        public virtual UserFile MediumIcon { get; set; }
+
+        [ForeignKey("MediumIcon")]
+        public int? MediumIconId { get; set; }
 
         //256x256
-        public UserFile LargeIcon { get; set; }
+        [ForeignKey("LargeIconId")]
+        public virtual UserFile LargeIcon { get; set; }
+
+        public int? LargeIconId { get; set; }
 
         public virtual ICollection<Tag> Tags { get; set; }
     }
