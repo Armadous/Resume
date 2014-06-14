@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -16,21 +17,23 @@ namespace Resume.Models
 
         public float Level { get; set; }
 
-        //64x64
+        //16x16
         [ForeignKey("SmallIconId")]
+        [JsonIgnore]
         public virtual UserFile SmallIcon { get; set; }
 
         public int? SmallIconId { get; set; }
 
-        //128x128
+        //64x64
         [ForeignKey("MediumIconId")]
+        [JsonIgnore]
         public virtual UserFile MediumIcon { get; set; }
 
-        [ForeignKey("MediumIcon")]
         public int? MediumIconId { get; set; }
 
         //256x256
         [ForeignKey("LargeIconId")]
+        [JsonIgnore]
         public virtual UserFile LargeIcon { get; set; }
 
         public int? LargeIconId { get; set; }

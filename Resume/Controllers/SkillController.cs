@@ -46,7 +46,7 @@ namespace Resume.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "SkillId,Name,Description,Level,MediumIconId")] Skill skill)
+        public ActionResult Create([Bind(Include = "SkillId,Name,Description,Level,SmallIconId,MediumIconId,LargeIconId")] Skill skill)
         {
             if (ModelState.IsValid)
             {

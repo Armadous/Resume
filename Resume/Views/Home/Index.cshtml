@@ -7,48 +7,108 @@
     <p>Programmer, problem solver, general neusence to database administrators.</p>
 </div>
 
-<div id="respnsies">
-    <ul data-bind="foreach: positions">
-        <li>
-            <h3 data-bind="text: Title"></h3>
-            <p data-bind="text: Company"></p>
-            <p data-bind="text: Description"></p>
-        </li>
-    </ul>
+<div class="row">
+    <div class="col-md-6">
+        <div id="responsibilities">
+            <ul data-bind="foreach: positions">
+                <li>
+                    <h3 data-bind="text: Title"></h3>
+                    <p data-bind="text: Company"></p>
+                    <p data-bind="text: Description"></p>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div id="skillChart" style="margin: 0 auto; overflow:visible" ></div>
+    </div>
 </div>
 
 
+
 @section Scripts {
+    @Scripts.Render("~/bundles/highcharts")
+
+    @Scripts.Render("~/Scripts/models/position.js")
     <script type="text/javascript">
-        var Position = Backbone.Model.extend();
+        $(function () {
+            //View model binding for positions
+            var pos_view_model = {
+                positions: kb.collectionObservable(new Positions)
+            };
 
-        var Positions = Backbone.Collection.extend({
-            model: Position,
-            url: '/api/position',
+            ko.applyBindings(pos_view_model, $('#responsibilities')[0]);
 
-            initialize: function () {
-                this.fetch({
-                    success: this.fetchSuccess,
-                    error: this.fetchError
-                });
-            },
-
-            fetchSuccess: function (collection, response) {
-                console.log('Collection fetch success', response);
-                console.log('Collection models: ', collection.models);
-            },
-
-            fetchError: function (collection, response) {
-                throw new Error("Fetch error " + response);
-            }
+            $.ajax({
+                type: "GET",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                url: "/api/skill",
+                success: function (data) {
+                    var categores = _.pluck(data, 'Name');
+                    var values = _.pluck(data, 'Level');
+                    
+                    //Skill column chart
+                    var chart = $('#skillChart').highcharts({
+                        chart: {
+                            type: 'column'
+                        },
+                        title: {
+                            text: 'Skills'
+                        },
+                        xAxis: {
+                            categories: categores
+                        },
+                        yAxis: {
+                            min: 0,
+                            max: 100,
+                            title: {
+                                text: 'Skill Level'
+                            },
+                            stackLabels: {
+                                enabled: true,
+                                style: {
+                                    fontWeight: 'bold',
+                                    color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+                                }
+                            }
+                        },
+                        legend: {
+                            enabled: false
+                        },
+                        tooltip: {
+                            formatter: function () {
+                                return '<b>' + this.x + '</b><br/>' +
+                                    this.series.name + ': ' + this.y + '<br/>' +
+                                    'Total: ' + this.point.stackTotal;
+                            }
+                        },
+                        plotOptions: {
+                            series: {
+                                color: '#666666'
+                            },
+                            column: {
+                                stacking: 'normal',
+                                dataLabels: {
+                                    enabled: true,
+                                    color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
+                                    style: {
+                                        textShadow: '0 0 3px black, 0 0 3px black'
+                                    }
+                                }
+                            }
+                        },
+                        series: [{
+                            name: 'Skills',
+                            data: values
+                        }]
+                    });
+                },
+                error: function (error) {
+                    jsonValue = jQuery.parseJSON(error.responseText);
+                    //jError('An error has occurred while saving the new part source: ' + jsonValue, { TimeShown: 3000 });
+                }
+            });
         });
-
-        var pos_view_model = {
-            positions: kb.collectionObservable(new Positions)
-        };
-
-        ko.applyBindings(pos_view_model, $('#respnsies')[0]);
-
-
     </script>
-    }
+}
