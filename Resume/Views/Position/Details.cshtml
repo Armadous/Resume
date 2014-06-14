@@ -56,7 +56,6 @@
     <li>
         <h3 data-bind="text: Name"></h3>
         <p data-bind="text: Description"></p>
-        <p data-bind="text: dataify"></p>
     </li>
 </ul>
 <form data-bind="submit: addResponsibility">
@@ -88,7 +87,7 @@
 <pre data-bind="text: debugJson"></pre>
 
 
-    @section Scripts {
+@section Scripts {
         @Scripts.Render("~/bundles/jqueryval")
         @Scripts.Render("~/bundles/knockout")
         @Scripts.Render("~/Scripts/models/responsibility.js")
@@ -139,4 +138,4 @@
 
     ko.applyBindings(new PositionViewModel());
         </script>
-    }
+}
