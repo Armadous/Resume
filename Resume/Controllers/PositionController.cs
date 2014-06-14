@@ -17,7 +17,7 @@ namespace Resume.Controllers
         // GET: /Position/
         public ActionResult Index()
         {
-            return View(db.Positions.OrderBy(n => n.StartDate).ToList());
+            return View(db.Positions.OrderByDescending(n => n.StartDate).ToList());
         }
 
         // GET: /Position/Details/5

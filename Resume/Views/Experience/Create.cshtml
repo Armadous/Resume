@@ -4,6 +4,10 @@
     ViewBag.Title = "Create";
 }
 
+@section Styles {
+    @Styles.Render("~/css/select2")
+}
+
 <h2>Create</h2>
 
 @using (Html.BeginForm()) 
@@ -26,7 +30,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.ResponsibilityId, "ResponsibilityId", new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("ResponsibilityId", String.Empty)
+                @Html.DropDownList("ResponsibilityId", null, String.Empty, new { @class = "form-control", @style = "width:100%" })
                 @Html.ValidationMessageFor(model => model.ResponsibilityId)
             </div>
         </div>
@@ -34,7 +38,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.SkillId, "SkillId", new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("SkillId", String.Empty)
+                @Html.DropDownList("SkillId", null, String.Empty, new { @class = "form-control", @style = "width:100%" })
                 @Html.ValidationMessageFor(model => model.SkillId)
             </div>
         </div>
@@ -50,3 +54,14 @@
 <div>
     @Html.ActionLink("Back to List", "Index")
 </div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/select2")
+
+    <script>
+        $(function () {
+            $("#ResponsibilityId,#SkillId").select2();
+        });
+    </script>
+}

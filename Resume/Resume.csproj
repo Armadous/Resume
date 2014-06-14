@@ -287,7 +287,7 @@
     <Compile Include="Utility\LocalizationHelper.cs" />
     <Compile Include="Utility\MarkdownHelper.cs" />
     <Compile Include="Utility\Validation.cs" />
-    <Compile Include="Views\ExperienceController.cs" />
+    <Compile Include="Models\ExperienceController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\css\select2-bootstrap.css" />

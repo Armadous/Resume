@@ -12,10 +12,13 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Responsibility.Name)
+            Position
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Skill.Name)
+            Responsibility
+        </th>
+        <th>
+            SKill
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Value)
@@ -25,6 +28,9 @@
 
 @foreach (var item in Model) {
     <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Responsibility.Position.Title)
+        </td>
         <td>
             @Html.DisplayFor(modelItem => item.Responsibility.Name)
         </td>
