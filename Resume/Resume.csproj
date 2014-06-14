@@ -266,6 +266,10 @@
     <Compile Include="Migrations\201406112356011_ReSkill.Designer.cs">
       <DependentUpon>201406112356011_ReSkill.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201406142110341_Experience.cs" />
+    <Compile Include="Migrations\201406142110341_Experience.Designer.cs">
+      <DependentUpon>201406142110341_Experience.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Experience.cs" />
@@ -283,6 +287,7 @@
     <Compile Include="Utility\LocalizationHelper.cs" />
     <Compile Include="Utility\MarkdownHelper.cs" />
     <Compile Include="Utility\Validation.cs" />
+    <Compile Include="Views\ExperienceController.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\css\select2-bootstrap.css" />
@@ -856,6 +861,11 @@
     <Content Include="Views\Skill\Index.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\UserFile.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\UserFile.cshtml" />
+    <Content Include="Views\Experience\Create.cshtml" />
+    <Content Include="Views\Experience\Delete.cshtml" />
+    <Content Include="Views\Experience\Details.cshtml" />
+    <Content Include="Views\Experience\Edit.cshtml" />
+    <Content Include="Views\Experience\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\userfiles\" />
@@ -894,6 +904,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201406112356011_ReSkill.resx">
       <DependentUpon>201406112356011_ReSkill.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201406142110341_Experience.resx">
+      <DependentUpon>201406142110341_Experience.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

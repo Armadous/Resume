@@ -29,9 +29,9 @@ namespace Resume
             bundles.Add(new ScriptBundle("~/bundles/select2").Include(
                 "~/Scripts/select2.min.js"));
 
-            bundles.Add(new StyleBundle("~/bundles/select2").Include(
+            bundles.Add(new StyleBundle("~/css/select2").Include(
                 "~/Content/css/select2.css",
-                "~/Content/css/select2-bootstrap.css"))
+                "~/Content/css/select2-bootstrap.css"));
 
             //TODO: Remove in favore of knockback control.
             // Knockout
