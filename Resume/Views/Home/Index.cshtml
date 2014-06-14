@@ -43,7 +43,7 @@
                 type: "GET",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
-                url: "/api/skill",
+                url: "/api/skill?$orderby=Level desc",
                 success: function (data) {
                     var categores = _.pluck(data, 'Name');
                     var values = _.pluck(data, 'Level');
