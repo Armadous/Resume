@@ -25,6 +25,14 @@ namespace Resume
                       "~/Scripts/respond.js",
                       "~/Scripts/bootstrap-datepicker.js"));
 
+            //select2
+            bundles.Add(new ScriptBundle("~/bundles/select2").Include(
+                "~/Scripts/select2.min.js"));
+
+            bundles.Add(new StyleBundle("~/bundles/select2").Include(
+                "~/Content/css/select2.css",
+                "~/Content/css/select2-bootstrap.css"))
+
             //TODO: Remove in favore of knockback control.
             // Knockout
             bundles.Add(new ScriptBundle("~/bundles/knockout").Include(
