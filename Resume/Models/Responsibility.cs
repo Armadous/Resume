@@ -20,6 +20,8 @@ namespace Resume.Models
 
         public virtual int PositionId { get; set; }
 
+        public virtual ICollection<Experience> Experiences { get; set; }
+
         public virtual ICollection<Tag> Tags { get; set; }
 
         public Responsibility()

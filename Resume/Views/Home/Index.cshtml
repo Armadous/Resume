@@ -38,49 +38,77 @@
     <script type="text/javascript">
         $(function () {
             //View model binding for positions
-            var pos_view_model = {
+            var view_model = {
                 positions: kb.collectionObservable(new Positions)
             };
 
-            ko.applyBindings(pos_view_model, $('#responsibilities')[0]);
+            ko.applyBindings(view_model, $('#responsibilities')[0]);
+
+            var skills;
+
+            //unique skills
+            $.get("/api/skill?$filter=HasExperience%20eq%20true", function (data) {
+                skills = data;
+            }, "json")
 
             $.ajax({
                 type: "GET",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
-                url: "/api/experience",
-                success: function (data) {
+                url: "/api/position",
+                success: function (positions) {
 
-                    var uniqueSkills = _.chain(data)
-                        .map(function (experience) { return experience.Skill })
-                        .uniq(function (item, key, a) { return item.Name })
-                        .value();
+                    while (!skills) {
+                        debugger;
+                    }
+                    
+                    var series = [];
+                    _.each(positions, function (position, index, list) {
+                        var responsibilites = position.Responsibilities;
+                        var experiences = _(responsibilites).map(function (responsibility) { return responsibility.Experiences; });
+                        var flatExperiences = _.flatten(experiences);
+                        var experiencesBySkill = _.groupBy(flatExperiences, function (experience) { return experience.SkillId; })
+                        var positionSkillSummary = _.map(experiencesBySkill, function (expGroup) {
+                            var skillSummary = _.reduce(expGroup, function (memo, experience) {
+                                //Sum skill group values
+                                memo.Value = memo.Value + experience.Value
+                                return memo;
+                            });
+                            return skillSummary;
+                        });
 
-                    //create series
-                    var positionSkills = _.map(pos_view_model.positions(), function (position) {
-                        return {
-                            Title: position.Title(),
-                            PositionId: position.PositionId(),
-                            Experiences: _.map(uniqueSkills, function (skill) {  })
-                        }
+                        var mappedSkillSummary = [];
+                        _.each(skills, function (skill) {
+                            var skillValue = _.find(positionSkillSummary, function (summary) { return skill.SkillId == summary.SkillId });
+                            if (skillValue)
+                                mappedSkillSummary.push(skillValue.Value);
+                            else
+                                mappedSkillSummary.push(null);
+                        })
+
+                        series.push({
+                            name: position.Title,
+                            data: mappedSkillSummary
+                            })
                     });
 
                     debugger;
 
                     $('#positionSKills').highcharts({
                         chart: {
-                            type: 'column'
+                            type: 'column',
+                            spacingBottom: 50
                         },
                         title: {
-                            text: 'Stacked column chart'
+                            text: 'Experience by Position'
                         },
                         xAxis: {
-                            categories: _(uniqueSkills).pluck("Name")
+                            categories: _(skills).pluck("Name")
                         },
                         yAxis: {
                             min: 0,
                             title: {
-                                text: 'Total fruit consumption'
+                                text: 'Experience'
                             },
                             stackLabels: {
                                 enabled: true,
@@ -91,10 +119,10 @@
                             }
                         },
                         legend: {
-                            align: 'right',
-                            x: -70,
-                            verticalAlign: 'top',
-                            y: 20,
+                            align: 'left',
+                            x: 70,
+                            verticalAlign: 'bottom',
+                            y: 40,
                             floating: true,
                             backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
                             borderColor: '#CCC',
@@ -120,16 +148,7 @@
                                 }
                             }
                         },
-                        series: [{
-                            name: 'Programmer Analyst',
-                            data: [5, 3, 4, 7, 2]
-                        }, {
-                            name: 'Web Developer',
-                            data: [2, 2, 3, 2, 1, 5]
-                        }, {
-                            name: 'IT Support - Lab Assistant',
-                            data: [3, 4, 4, 2, 5]
-                        }]
+                        series: series
                     });
                 },
                 error: function (error) {
@@ -151,7 +170,7 @@
                     //Skill column chart
                     var chart = $('#skillChart').highcharts({
                         chart: {
-                            type: 'column'
+                            type: 'bar'
                         },
                         title: {
                             text: 'Skills'

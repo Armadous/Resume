@@ -38,6 +38,16 @@ namespace Resume.Models
 
         public int? LargeIconId { get; set; }
 
+        public bool HasExperience { 
+            get 
+            {
+                using (var db = new ResumeDb())
+                {
+                    return db.Experiences.Any(n => n.SkillId == SkillId);
+                }
+            } 
+            private set {} }
+
         public virtual ICollection<Tag> Tags { get; set; }
     }
 }
