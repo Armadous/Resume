@@ -17,9 +17,10 @@ namespace Resume.api
         private ResumeDb db = new ResumeDb();
 
         // GET api/Responsibility
+        [Queryable]
         public IQueryable<Responsibility> GetResponsibilities()
         {
-            return db.Responsibilities;
+            return db.Responsibilities.ToList().AsQueryable();
         }
 
         // GET api/Responsibility/5

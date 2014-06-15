@@ -16,7 +16,6 @@ namespace Resume.Models
 
         public double Percentage { get; set; }
 
-        [JsonIgnore]
         public virtual Position Position { get; set; }
 
         public virtual int PositionId { get; set; }

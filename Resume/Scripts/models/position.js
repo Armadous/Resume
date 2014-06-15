@@ -2,7 +2,7 @@
 
 Positions = Backbone.Collection.extend({
     model: Position,
-    url: '/api/position',
+    url: '/api/position?$select=Title,PositionId,Description,Company,StartDate,EndDate',
 
     initialize: function () {
         this.fetch({

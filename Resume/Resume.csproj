@@ -208,6 +208,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="api\ExperienceController.cs" />
     <Compile Include="api\PositionController.cs" />
     <Compile Include="api\ResponsibilityController.cs" />
     <Compile Include="api\SkillController.cs" />

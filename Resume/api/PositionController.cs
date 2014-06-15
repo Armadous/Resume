@@ -17,10 +17,10 @@ namespace Resume.api
         private ResumeDb db = new ResumeDb();
 
         // GET api/Position
-        public List<Position> GetPositions()
+        [Queryable]
+        public IQueryable<Position> GetPositions()
         {
-            var positions = db.Positions.ToList();
-            return db.Positions.ToList();
+            return db.Positions.ToList().AsQueryable();
         }
 
         // GET api/Position/5

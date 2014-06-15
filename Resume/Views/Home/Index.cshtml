@@ -23,6 +23,11 @@
         <div id="skillChart" style="margin: 0 auto; overflow:visible" ></div>
     </div>
 </div>
+<div class="row">
+    <div class="col-md-12">
+        <div id="positionSKills"></div>
+    </div>
+</div>
 
 
 
@@ -38,6 +43,101 @@
             };
 
             ko.applyBindings(pos_view_model, $('#responsibilities')[0]);
+
+            $.ajax({
+                type: "GET",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                url: "/api/experience",
+                success: function (data) {
+
+                    var uniqueSkills = _.chain(data)
+                        .map(function (experience) { return experience.Skill })
+                        .uniq(function (item, key, a) { return item.Name })
+                        .value();
+
+                    //create series
+                    var positionSkills = _.map(pos_view_model.positions(), function (position) {
+                        return {
+                            Title: position.Title(),
+                            PositionId: position.PositionId(),
+                            Experiences: _.map(uniqueSkills, function (skill) {  })
+                        }
+                    });
+
+                    debugger;
+
+                    $('#positionSKills').highcharts({
+                        chart: {
+                            type: 'column'
+                        },
+                        title: {
+                            text: 'Stacked column chart'
+                        },
+                        xAxis: {
+                            categories: _(uniqueSkills).pluck("Name")
+                        },
+                        yAxis: {
+                            min: 0,
+                            title: {
+                                text: 'Total fruit consumption'
+                            },
+                            stackLabels: {
+                                enabled: true,
+                                style: {
+                                    fontWeight: 'bold',
+                                    color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+                                }
+                            }
+                        },
+                        legend: {
+                            align: 'right',
+                            x: -70,
+                            verticalAlign: 'top',
+                            y: 20,
+                            floating: true,
+                            backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
+                            borderColor: '#CCC',
+                            borderWidth: 1,
+                            shadow: false
+                        },
+                        tooltip: {
+                            formatter: function () {
+                                return '<b>' + this.x + '</b><br/>' +
+                                    this.series.name + ': ' + this.y + '<br/>' +
+                                    'Total: ' + this.point.stackTotal;
+                            }
+                        },
+                        plotOptions: {
+                            column: {
+                                stacking: 'normal',
+                                dataLabels: {
+                                    enabled: true,
+                                    color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
+                                    style: {
+                                        textShadow: '0 0 3px black, 0 0 3px black'
+                                    }
+                                }
+                            }
+                        },
+                        series: [{
+                            name: 'Programmer Analyst',
+                            data: [5, 3, 4, 7, 2]
+                        }, {
+                            name: 'Web Developer',
+                            data: [2, 2, 3, 2, 1, 5]
+                        }, {
+                            name: 'IT Support - Lab Assistant',
+                            data: [3, 4, 4, 2, 5]
+                        }]
+                    });
+                },
+                error: function (error) {
+                    jsonValue = jQuery.parseJSON(error.responseText);
+                    //jError('An error has occurred while saving the new part source: ' + jsonValue, { TimeShown: 3000 });
+                }
+            });
+
 
             $.ajax({
                 type: "GET",
