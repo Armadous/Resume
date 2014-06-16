@@ -15,14 +15,12 @@ namespace Resume.Controllers
 
         public ActionResult About()
         {
-            ViewBag.Message = "This is me.";
 
             return View();
         }
 
         public ActionResult Contact()
         {
-            ViewBag.Message = "So you wana talk ay?";
 
             return View();
         }
