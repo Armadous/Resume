@@ -1,7 +1,12 @@
 resume
 ======
 
-My name is Josh and this is my proof of self. I code therefore I am.
+Turn your boring resume into an engaging infographic experience. 
+
+Version .0001
+----
+
+This is very early software, handle with care.
 
 Demo
 ----
