@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Web;
 
@@ -15,8 +16,10 @@ namespace Resume.Models
 
         public string Company { get; set; }
 
+        [DisplayName("Start Date")]
         public DateTime StartDate { get; set; }
 
+        [DisplayName("End Date")]
         public DateTime? EndDate { get; set; }
 
         public virtual ICollection<Responsibility> Responsibilities { get; set; }
