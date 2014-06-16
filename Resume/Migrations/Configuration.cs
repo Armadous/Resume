@@ -79,19 +79,70 @@ namespace Resume.Migrations
                 samplePositionTwo.Responsibilities.Add(grillResponsibility);
 
                 ////Some skills
-                //var cocktailSkill = new Skill()
-                //{
-                //    Name = "Cocktail Mixer",
-                //    Description = "I make a mean Old-fashioned",
-                //    Level = 100
-                //};
+                var cocktailSkill = new Skill()
+                {
+                    Name = "Cocktail Mixer",
+                    Description = "I make a mean Old-fashioned",
+                    Level = 8
+                };
+                context.Skills.Add(cocktailSkill);
 
-                //var retailSkill = new Skill()
-                //{
-                //    Name = "Retail",
-                //    Description = "I sell like a boss",
-                //    Level = 5
-                //};
+                var retailSkill = new Skill()
+                {
+                    Name = "Retail",
+                    Description = "I sell like a boss",
+                    Level = 5
+                };
+                context.Skills.Add(retailSkill);
+
+                var schmoozing = new Skill()
+                {
+                    Name = "Schmoozing",
+                    Description = "I wine and dine with the best of em",
+                    Level = 5
+                };
+                context.Skills.Add(schmoozing);
+
+                var grilling = new Skill()
+                {
+                    Name = "Grilling",
+                    Description = "The key is a low flame",
+                    Level = 2
+                };
+                context.Skills.Add(grilling);
+
+                //and then some experiences for those skills
+                var nineToFiveGrill = new Models.Experience()
+                {
+                    Value = 30,
+                    Responsibility = grillResponsibility,
+                    Skill = grilling,
+                };
+                context.Experiences.Add(nineToFiveGrill);
+
+                var sellingWidgets = new Models.Experience()
+                {
+                    Value = 50,
+                    Responsibility = makinMoney,
+                    Skill = retailSkill
+                };
+                context.Experiences.Add(sellingWidgets);
+
+                var companyBBQ = new Models.Experience()
+                {
+                    Value = 20,
+                    Responsibility = makinMoney,
+                    Skill = grilling
+                };
+                context.Experiences.Add(companyBBQ);
+
+                var winingAndDining = new Models.Experience()
+                {
+                    Value = 30,
+                    Responsibility = makinMoney,
+                    Skill = schmoozing
+                };
+                context.Experiences.Add(winingAndDining);
             }
         }
     }
