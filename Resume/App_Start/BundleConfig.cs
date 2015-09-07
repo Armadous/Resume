@@ -36,16 +36,23 @@ namespace Resume
             //TODO: Remove in favore of knockback control.
             // Knockout
             bundles.Add(new ScriptBundle("~/bundles/knockout").Include(
-                "~/Scripts/knockout-3.1.0.js"));
+                "~/Scripts/knockout-{version}.js"));
 
-            //TODO: Remove in favore of knockback control.
+            // Knockout
+            bundles.Add(new ScriptBundle("~/bundles/underscore").Include(
+                "~/Scripts/underscore.js"));
+
             // Backbone
+            bundles.Add(new ScriptBundle("~/bundles/backbone").Include(
+                "~/Scripts/backbone.js"));
+
+            // Backbone models
             bundles.Add(new ScriptBundle("~/bundles/models").Include(
                 "~/Scripts/models/*.js"));
 
             // Knockback (Backbone/Knockout middleman)
             bundles.Add(new ScriptBundle("~/bundles/knockback").Include(
-                "~/Scripts/knockback-core-stack.js"));
+                "~/Scripts/knockback-core.js"));
 
             // HighCharts
             bundles.Add(new ScriptBundle("~/bundles/highcharts").Include(
