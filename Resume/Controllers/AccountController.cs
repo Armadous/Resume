@@ -13,6 +13,7 @@ using Resume.Models;
 namespace Resume.Controllers
 {
     [Authorize]
+    [RequireHttps]
     public class AccountController : Controller
     {
         public AccountController()
