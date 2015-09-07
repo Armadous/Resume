@@ -173,3 +173,4 @@ UpgradeLog*.htm
 # Microsoft Fakes
 FakesAssemblies/
 Resume/App_Data/userfiles/
+Resume/AppSettingsSecrets.config

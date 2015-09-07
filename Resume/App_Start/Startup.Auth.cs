@@ -2,6 +2,7 @@
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Owin;
+using System.Configuration;
 
 namespace Resume
 {
@@ -32,7 +33,8 @@ namespace Resume
             //   appId: "",
             //   appSecret: "");
 
-            //app.UseGoogleAuthentication();
+            // Google Oauth2 provider.
+            app.UseGoogleAuthentication(ConfigurationManager.AppSettings["GoogleAuthKey"], ConfigurationManager.AppSettings["GoogleAuthSecret"]);
         }
     }
 }

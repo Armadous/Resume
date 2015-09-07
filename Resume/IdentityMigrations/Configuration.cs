@@ -5,7 +5,7 @@ namespace Resume.IdentityMigrations
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<Resume.Models.ApplicationDbContext>
+    public class Configuration : DbMigrationsConfiguration<Resume.Models.ApplicationDbContext>
     {
         public Configuration()
         {
