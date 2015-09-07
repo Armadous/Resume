@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Resume.Models;
+using System.Web.Http.OData;
 
 namespace Resume.api
 {
@@ -17,10 +18,10 @@ namespace Resume.api
         private ResumeDb db = new ResumeDb();
 
         // GET api/Position
-        [Queryable]
-        public IQueryable<Position> GetPositions()
+        [EnableQuery]
+        public IQueryable<Position> GetPositions(string user)
         {
-            return db.Positions.ToList().AsQueryable();
+            return db.Positions.Where(p => p.OwnerIdentity == user).ToList().AsQueryable();
         }
 
         // GET api/Position/5

@@ -10,6 +10,7 @@ using Resume.Models;
 
 namespace Resume.Controllers
 {
+    [Authorize]
     public class SkillController : Controller
     {
         private ResumeDb db = new ResumeDb();
@@ -17,7 +18,7 @@ namespace Resume.Controllers
         // GET: /Skill/
         public ActionResult Index()
         {
-            return View(db.Skills.ToList());
+            return View(db.Skills.Where(s => s.OwnerIdentity == User.Identity.Name).ToList());
         }
 
         // GET: /Skill/Details/5
@@ -31,6 +32,10 @@ namespace Resume.Controllers
             if (skill == null)
             {
                 return HttpNotFound();
+            }
+            if(skill.OwnerIdentity != User.Identity.Name)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             return View(skill);
         }
@@ -48,6 +53,7 @@ namespace Resume.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "SkillId,Name,Description,Level,SmallIconId,MediumIconId,LargeIconId")] Skill skill)
         {
+            skill.OwnerIdentity = User.Identity.Name;
             if (ModelState.IsValid)
             {
                 db.Skills.Add(skill);
@@ -70,6 +76,10 @@ namespace Resume.Controllers
             {
                 return HttpNotFound();
             }
+            if (skill.OwnerIdentity != User.Identity.Name)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
 
             return View(skill);
         }
@@ -81,6 +91,20 @@ namespace Resume.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "SkillId,Name,Description,Level,SmallIconId,MediumIconId,LargeIconId")] Skill skill)
         {
+            // Can the user update this item?
+            var existingSkill = db.Skills.AsNoTracking().SingleOrDefault(s => s.SkillId == skill.SkillId);
+            if (existingSkill == null)
+            {
+                return HttpNotFound();
+            }
+
+            if (existingSkill.OwnerIdentity != User.Identity.Name)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            skill.OwnerIdentity = existingSkill.OwnerIdentity;
+
             if (ModelState.IsValid)
             {
                 db.Entry(skill).State = EntityState.Modified;
@@ -102,6 +126,10 @@ namespace Resume.Controllers
             {
                 return HttpNotFound();
             }
+            if (skill.OwnerIdentity != User.Identity.Name)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
             return View(skill);
         }
 
@@ -111,6 +139,14 @@ namespace Resume.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Skill skill = db.Skills.Find(id);
+            if (skill == null)
+            {
+                return HttpNotFound();
+            }
+            if (skill.OwnerIdentity != User.Identity.Name)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
             db.Skills.Remove(skill);
             db.SaveChanges();
             return RedirectToAction("Index");

@@ -1,4 +1,5 @@
-﻿using Resume.Migrations;
+﻿using Microsoft.AspNet.Identity.EntityFramework;
+using Resume.Migrations;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -15,7 +16,7 @@ namespace Resume.Models
         public DbSet<Experience> Experiences { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<UserFile> UserFiles { get; set; }
-
+       
         public ResumeDb()
             : base("DefaultConnection")
         {

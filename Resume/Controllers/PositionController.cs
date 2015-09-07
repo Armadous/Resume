@@ -10,6 +10,7 @@ using Resume.Models;
 
 namespace Resume.Controllers
 {
+    [Authorize]
     public class PositionController : Controller
     {
         private ResumeDb db = new ResumeDb();
@@ -17,7 +18,7 @@ namespace Resume.Controllers
         // GET: /Position/
         public ActionResult Index()
         {
-            return View(db.Positions.OrderByDescending(n => n.StartDate).ToList());
+            return View(db.Positions.Where(p => p.OwnerIdentity == User.Identity.Name).OrderByDescending(n => n.StartDate).ToList());
         }
 
         // GET: /Position/Details/5
@@ -31,6 +32,10 @@ namespace Resume.Controllers
             if (position == null)
             {
                 return HttpNotFound();
+            }
+            if(position.OwnerIdentity != User.Identity.Name)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             return View(position);
         }
@@ -46,8 +51,10 @@ namespace Resume.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include="PositionId,Title,Description,Company,StartDate,EndDate")] Position position)
+        public ActionResult Create([Bind(Include = "PositionId,Title,Description,Company,StartDate,EndDate")] Position position)
         {
+            position.OwnerIdentity = User.Identity.Name;
+
             if (ModelState.IsValid)
             {
                 db.Positions.Add(position);
@@ -70,6 +77,11 @@ namespace Resume.Controllers
             {
                 return HttpNotFound();
             }
+            // Do you own this position?
+            if (position.OwnerIdentity != User.Identity.Name)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
             return View(position);
         }
 
@@ -80,6 +92,20 @@ namespace Resume.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "PositionId,Title,Description,Company,StartDate,EndDate")] Position position)
         {
+            // Can the user update this item?
+            var existingPosition = db.Positions.AsNoTracking().SingleOrDefault(p=> p.PositionId == position.PositionId);
+            if(existingPosition == null)
+            {
+                return HttpNotFound();
+            }
+
+            if(existingPosition.OwnerIdentity != User.Identity.Name)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            
+            position.OwnerIdentity = existingPosition.OwnerIdentity;
+
             if (ModelState.IsValid)
             {
                 db.Entry(position).State = EntityState.Modified;
@@ -96,10 +122,16 @@ namespace Resume.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             Position position = db.Positions.Find(id);
             if (position == null)
             {
                 return HttpNotFound();
+            }
+            // Do you own this position?
+            if (position.OwnerIdentity != User.Identity.Name)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             return View(position);
         }
@@ -110,6 +142,16 @@ namespace Resume.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Position position = db.Positions.Find(id);
+            if (position == null)
+            {
+                return HttpNotFound();
+            }
+            // Do you own this position?
+            if (position.OwnerIdentity != User.Identity.Name)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
             db.Positions.Remove(position);
             db.SaveChanges();
             return RedirectToAction("Index");

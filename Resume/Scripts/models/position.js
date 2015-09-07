@@ -2,9 +2,12 @@
 
 Positions = Backbone.Collection.extend({
     model: Position,
-    url: '/api/position?$select=Title,PositionId,Description,Company,StartDate,EndDate&$orderby=StartDate%20desc',
+    url: function () {
+        return '/api/position/' + this.user + '?$select=Title,PositionId,Description,Company,StartDate,EndDate&$orderby=StartDate%20desc';
+    },
 
-    initialize: function () {
+    initialize: function (model, options) {
+        this.user = options.user;
         this.fetch({
             success: this.fetchSuccess,
             error: this.fetchError
