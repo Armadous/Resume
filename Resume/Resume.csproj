@@ -241,6 +241,15 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="IdentityMigrations\201509070210144_InitialCreate.cs" />
+    <Compile Include="IdentityMigrations\201509070210144_InitialCreate.Designer.cs">
+      <DependentUpon>201509070210144_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IdentityMigrations\201509070345502_Initial.cs" />
+    <Compile Include="IdentityMigrations\201509070345502_Initial.Designer.cs">
+      <DependentUpon>201509070345502_Initial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IdentityMigrations\Configuration.cs" />
     <Compile Include="Migrations\201404011713386_firstgo.cs" />
     <Compile Include="Migrations\201404011713386_firstgo.Designer.cs">
       <DependentUpon>201404011713386_firstgo.cs</DependentUpon>
@@ -284,6 +293,10 @@
     <Compile Include="Migrations\201406142110341_Experience.cs" />
     <Compile Include="Migrations\201406142110341_Experience.Designer.cs">
       <DependentUpon>201406142110341_Experience.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201509070336467_IdentityModelUpdate.cs" />
+    <Compile Include="Migrations\201509070336467_IdentityModelUpdate.Designer.cs">
+      <DependentUpon>201509070336467_IdentityModelUpdate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -573,6 +586,12 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="IdentityMigrations\201509070210144_InitialCreate.resx">
+      <DependentUpon>201509070210144_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="IdentityMigrations\201509070345502_Initial.resx">
+      <DependentUpon>201509070345502_Initial.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201404011713386_firstgo.resx">
       <DependentUpon>201404011713386_firstgo.cs</DependentUpon>
     </EmbeddedResource>
@@ -605,6 +624,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201406142110341_Experience.resx">
       <DependentUpon>201406142110341_Experience.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201509070336467_IdentityModelUpdate.resx">
+      <DependentUpon>201509070336467_IdentityModelUpdate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
