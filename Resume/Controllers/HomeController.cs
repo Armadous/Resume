@@ -10,13 +10,9 @@ namespace Resume.Controllers
     {
         public ActionResult Headers()
         {
-            var headers = "";
-            foreach(var header in Request.Headers.Keys)
-            {
-                headers += string.Format("{0}:{1},", header, Request.Headers[header.ToString()]);
-            }
+            var proto = Request.Headers["X-Forwarded-Proto"];
 
-            return Content(headers);
+            return Content(proto);
         }
 
         public ActionResult Index()
