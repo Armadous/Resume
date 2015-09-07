@@ -238,6 +238,7 @@
     <Compile Include="Controllers\PositionController.cs" />
     <Compile Include="Controllers\ResponsibilityController.cs" />
     <Compile Include="Controllers\SkillController.cs" />
+    <Compile Include="Extensions\Attributes.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

@@ -14,6 +14,7 @@ namespace Resume.Controllers
 {
     [Authorize]
     [RequireHttps]
+    [Resume.Extensions.RequireHttps]
     public class AccountController : Controller
     {
         public AccountController()
