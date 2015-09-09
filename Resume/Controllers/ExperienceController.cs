@@ -8,7 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using Resume.Models;
 
-namespace Resume.Views
+namespace Resume.Controllers
 {
     [Authorize]
     public class ExperienceController : Controller
@@ -97,7 +97,7 @@ namespace Resume.Views
         public ActionResult Edit([Bind(Include="ExperienceId,Value,ResponsibilityId,SkillId")] Experience experience)
         {
             // Can the user update this item?
-            var existingExperience = db.Experiences.AsNoTracking().SingleOrDefault(e => e.ExperienceId == experience.ExperienceId);
+            var existingExperience = db.Experiences.AsNoTracking().SingleOrDefault(e => e.Id == experience.Id);
             if (existingExperience == null)
             {
                 return HttpNotFound();

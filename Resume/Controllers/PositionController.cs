@@ -100,7 +100,7 @@ namespace Resume.Controllers
         public ActionResult Edit([Bind(Include = "PositionId,Title,Description,Company,StartDate,EndDate")] Position position)
         {
             // Can the user update this item?
-            var existingPosition = db.Positions.AsNoTracking().SingleOrDefault(p=> p.PositionId == position.PositionId);
+            var existingPosition = db.Positions.AsNoTracking().SingleOrDefault(p=> p.Id == position.Id);
             if(existingPosition == null)
             {
                 return HttpNotFound();

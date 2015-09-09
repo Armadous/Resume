@@ -45,7 +45,7 @@ namespace Resume.api
                 return BadRequest(ModelState);
             }
 
-            if (id != skill.SkillId)
+            if (id != skill.Id)
             {
                 return BadRequest();
             }
@@ -83,7 +83,7 @@ namespace Resume.api
             db.Skills.Add(skill);
             db.SaveChanges();
 
-            return CreatedAtRoute("DefaultApi", new { id = skill.SkillId }, skill);
+            return CreatedAtRoute("DefaultApi", new { id = skill.Id }, skill);
         }
 
         // DELETE api/Skill/5
@@ -113,7 +113,7 @@ namespace Resume.api
 
         private bool SkillExists(int id)
         {
-            return db.Skills.Count(e => e.SkillId == id) > 0;
+            return db.Skills.Count(e => e.Id == id) > 0;
         }
     }
 }

@@ -44,7 +44,7 @@ namespace Resume.api
                 return BadRequest(ModelState);
             }
 
-            if (id != experience.ExperienceId)
+            if (id != experience.Id)
             {
                 return BadRequest();
             }
@@ -82,7 +82,7 @@ namespace Resume.api
             db.Experiences.Add(experience);
             db.SaveChanges();
 
-            return CreatedAtRoute("DefaultApi", new { id = experience.ExperienceId }, experience);
+            return CreatedAtRoute("DefaultApi", new { id = experience.Id }, experience);
         }
 
         // DELETE api/Experience/5
@@ -112,7 +112,7 @@ namespace Resume.api
 
         private bool ExperienceExists(int id)
         {
-            return db.Experiences.Count(e => e.ExperienceId == id) > 0;
+            return db.Experiences.Count(e => e.Id == id) > 0;
         }
     }
 }
