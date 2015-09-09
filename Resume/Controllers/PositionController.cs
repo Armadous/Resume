@@ -8,23 +8,24 @@ using System.Web;
 using System.Web.Mvc;
 using Resume.Models;
 using NHibernate;
-using NHibernate.Linq;
 
 namespace Resume.Controllers
 {
     [Authorize]
     public class PositionController : Controller
     {
-        private readonly ISession db;
+        private ResumeDb db = new ResumeDb();
+
+        private readonly ISession session;
         public PositionController(ISession session)
         {
-            db = session;
+            this.session = session;
         }
 
         // GET: /Position/
         public ActionResult Index()
         {
-            return View(db.Query<Position>().Where(p => p.OwnerIdentity == User.Identity.Name).OrderByDescending(n => n.StartDate).ToList());
+            return View(db.Positions.Where(p => p.OwnerIdentity == User.Identity.Name).OrderByDescending(n => n.StartDate).ToList());
         }
 
         // GET: /Position/Details/5
@@ -34,7 +35,7 @@ namespace Resume.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Position position = db.Get<Position>(id);
+            Position position = db.Positions.Find(id);
             if (position == null)
             {
                 return HttpNotFound();
@@ -63,7 +64,8 @@ namespace Resume.Controllers
 
             if (ModelState.IsValid)
             {
-                db.Save(position);
+                db.Positions.Add(position);
+                db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
@@ -77,7 +79,7 @@ namespace Resume.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Position position = db.Get<Position>(id);
+            Position position = db.Positions.Find(id);
             if (position == null)
             {
                 return HttpNotFound();
@@ -95,10 +97,10 @@ namespace Resume.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,PositionId,Title,Description,Company,StartDate,EndDate")] Position position)
+        public ActionResult Edit([Bind(Include = "PositionId,Title,Description,Company,StartDate,EndDate")] Position position)
         {
             // Can the user update this item?
-            var existingPosition = db.Get<Position>(position.Id);
+            var existingPosition = db.Positions.AsNoTracking().SingleOrDefault(p=> p.Id == position.Id);
             if(existingPosition == null)
             {
                 return HttpNotFound();
@@ -113,11 +115,8 @@ namespace Resume.Controllers
 
             if (ModelState.IsValid)
             {
-                using(var tx = db.BeginTransaction())
-                {
-                    db.Merge<Position>(position);
-                    tx.Commit();
-                }
+                db.Entry(position).State = EntityState.Modified;
+                db.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(position);
@@ -131,7 +130,7 @@ namespace Resume.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            Position position = db.Get<Position>(id);
+            Position position = db.Positions.Find(id);
             if (position == null)
             {
                 return HttpNotFound();
@@ -149,7 +148,7 @@ namespace Resume.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Position position = db.Get<Position>(id);
+            Position position = db.Positions.Find(id);
             if (position == null)
             {
                 return HttpNotFound();
@@ -160,12 +159,8 @@ namespace Resume.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            using(var tx = db.BeginTransaction())
-            {
-                db.Delete(position);
-                tx.Commit();
-            }
-
+            db.Positions.Remove(position);
+            db.SaveChanges();
             return RedirectToAction("Index");
         }
 

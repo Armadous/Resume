@@ -80,7 +80,7 @@
 </form>
 
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Edit", "Edit", new { id = Model.PositionId }) |
     @Html.ActionLink("Back to List", "Index")
 </p>
 
@@ -97,11 +97,11 @@
 
         self.responsibilities = ko.observableArray([]);
 
-        self.newResponsibility = ko.observable(new Responsibility({ Name: "", Description: "", PositionId: @Model.Id }));
+        self.newResponsibility = ko.observable(new Responsibility({ Name: "", Description: "", PositionId: @Model.PositionId }));
 
         self.debugJson = ko.observable();
 
-        var positionData = $.getJSON("/api/position/@Model.Id/responsibilities", function (data) {
+        var positionData = $.getJSON("/api/position/@Model.PositionId/responsibilities", function (data) {
                     //DO STUFF WITH DATA
                     var mapped = $.map(data, function (item) { return new Responsibility(item) });
                     self.responsibilities(mapped);
@@ -128,7 +128,7 @@
                 });
 
                     self.responsibilities.push(new Responsibility(self.newResponsibility));
-                    self.newResponsibility(new Responsibility({ Name: "", Description: "", PositionId: @Model.Id }));
+                    self.newResponsibility(new Responsibility({ Name: "", Description: "", PositionId: @Model.PositionId }));
         };
 
         self.updateResponsibility = function (item) {
