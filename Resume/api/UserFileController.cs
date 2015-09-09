@@ -51,7 +51,7 @@ namespace Resume.api
                 return BadRequest(ModelState);
             }
 
-            if (id != userfile.Id)
+            if (id != userfile.UserFileId)
             {
                 return BadRequest();
             }
@@ -134,7 +134,7 @@ namespace Resume.api
 
         private bool UserFileExists(int id)
         {
-            return db.UserFiles.Count(e => e.Id == id) > 0;
+            return db.UserFiles.Count(e => e.UserFileId == id) > 0;
         }
     }
 }

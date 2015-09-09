@@ -8,52 +8,49 @@ using System.Web;
 
 namespace Resume.Models
 {
-    public class Skill : Entity
+    public class Skill
     {
-        public virtual string OwnerIdentity { get; set; }
+        public int SkillId { get; set; }
 
-        public virtual string Name { get; set; }
+        public string OwnerIdentity { get; set; }
 
-        public virtual string Description { get; set; }
+        public string Name { get; set; }
 
-        public virtual float Level { get; set; }
+        public string Description { get; set; }
+
+        public float Level { get; set; }
 
         //16x16
         [ForeignKey("SmallIconId")]
         [JsonIgnore]
         public virtual UserFile SmallIcon { get; set; }
 
-        public virtual int? SmallIconId { get; set; }
+        public int? SmallIconId { get; set; }
 
         //64x64
         [ForeignKey("MediumIconId")]
         [JsonIgnore]
         public virtual UserFile MediumIcon { get; set; }
 
-        public virtual int? MediumIconId { get; set; }
+        public int? MediumIconId { get; set; }
 
         //256x256
         [ForeignKey("LargeIconId")]
         [JsonIgnore]
         public virtual UserFile LargeIcon { get; set; }
 
-        public virtual int? LargeIconId { get; set; }
+        public int? LargeIconId { get; set; }
 
-        public virtual bool HasExperience { 
+        public bool HasExperience { 
             get 
             {
-                return Experiences.Any();
+                using (var db = new ResumeDb())
+                {
+                    return db.Experiences.Any(n => n.SkillId == SkillId);
+                }
             } 
-            protected set {} }
+            private set {} }
 
-        public virtual IList<Tag> Tags { get; set; }
-
-        public virtual IList<Experience> Experiences { get; set; }
-
-        public Skill()
-        {
-            Tags = new List<Tag>();
-            Experiences = new List<Experience>();
-        }
+        public virtual ICollection<Tag> Tags { get; set; }
     }
 }

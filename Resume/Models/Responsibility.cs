@@ -6,26 +6,27 @@ using System.Web;
 
 namespace Resume.Models
 {
-    public class Responsibility : Entity
+    public class Responsibility
     {
-        public virtual string Name { get; set; }
+        public int ResponsibilityId { get; set; }
 
-        public virtual string Description { get; set; }
+        public string Name { get; set; }
 
-        public virtual double Percentage { get; set; }
+        public string Description { get; set; }
+
+        public double Percentage { get; set; }
 
         public virtual Position Position { get; set; }
 
         public virtual int PositionId { get; set; }
 
-        public virtual IList<Experience> Experiences { get; set; }
+        public virtual ICollection<Experience> Experiences { get; set; }
 
-        public virtual IList<Tag> Tags { get; set; }
+        public virtual ICollection<Tag> Tags { get; set; }
 
         public Responsibility()
         {
-            Tags = new List<Tag>();
-            Experiences = new List<Experience>(); 
+            Tags = new HashSet<Tag>();
         }
     }
 }

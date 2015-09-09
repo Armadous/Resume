@@ -59,7 +59,7 @@ namespace Resume.api
                 return BadRequest(ModelState);
             }
 
-            if (id != position.Id)
+            if (id != position.PositionId)
             {
                 return BadRequest();
             }
@@ -97,7 +97,7 @@ namespace Resume.api
             db.Positions.Add(position);
             db.SaveChanges();
 
-            return CreatedAtRoute("DefaultApi", new { id = position.Id }, position);
+            return CreatedAtRoute("DefaultApi", new { id = position.PositionId }, position);
         }
 
         // DELETE api/Position/5
@@ -127,7 +127,7 @@ namespace Resume.api
 
         private bool PositionExists(int id)
         {
-            return db.Positions.Count(e => e.Id == id) > 0;
+            return db.Positions.Count(e => e.PositionId == id) > 0;
         }
     }
 }

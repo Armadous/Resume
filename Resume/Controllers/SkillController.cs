@@ -92,7 +92,7 @@ namespace Resume.Controllers
         public ActionResult Edit([Bind(Include = "SkillId,Name,Description,Level,SmallIconId,MediumIconId,LargeIconId")] Skill skill)
         {
             // Can the user update this item?
-            var existingSkill = db.Skills.AsNoTracking().SingleOrDefault(s => s.Id == skill.Id);
+            var existingSkill = db.Skills.AsNoTracking().SingleOrDefault(s => s.SkillId == skill.SkillId);
             if (existingSkill == null)
             {
                 return HttpNotFound();

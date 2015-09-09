@@ -44,7 +44,7 @@ namespace Resume.api
                 return BadRequest(ModelState);
             }
 
-            if (id != responsibility.Id)
+            if (id != responsibility.ResponsibilityId)
             {
                 return BadRequest();
             }
@@ -82,7 +82,7 @@ namespace Resume.api
             db.Responsibilities.Add(responsibility);
             db.SaveChanges();
 
-            return CreatedAtRoute("DefaultApi", new { id = responsibility.Id }, responsibility);
+            return CreatedAtRoute("DefaultApi", new { id = responsibility.ResponsibilityId }, responsibility);
         }
 
         // DELETE api/Responsibility/5
@@ -112,7 +112,7 @@ namespace Resume.api
 
         private bool ResponsibilityExists(int id)
         {
-            return db.Responsibilities.Count(e => e.Id == id) > 0;
+            return db.Responsibilities.Count(e => e.ResponsibilityId == id) > 0;
         }
     }
 }
