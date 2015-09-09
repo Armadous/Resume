@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Resume.Models;
+using NHibernate;
 
 namespace Resume.Controllers
 {
@@ -14,6 +15,12 @@ namespace Resume.Controllers
     public class SkillController : Controller
     {
         private ResumeDb db = new ResumeDb();
+
+        private readonly ISession _db;
+        public SkillController(ISession session)
+        {
+            _db = session;
+        }
 
         // GET: /Skill/
         public ActionResult Index()
