@@ -52,12 +52,19 @@
 
     </dl>
 </div>
-<ul data-bind=" foreach: responsibilities">
-    <li>
-        <h3 data-bind="text: Name"></h3>
-        <p data-bind="text: Description"></p>
-    </li>
-</ul>
+    <div data-bind=" foreach: responsibilities">
+        <div class="row">
+            <div class="col-md-1" style="text-align:right">
+                <button type="button" class="btn btn-default" data-bind="click: $root.deleteResponsibility">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                </button>
+            </div>
+            <div class="col-md-5">
+                <h3 style="margin-top:0" data-bind="text: Name"></h3>
+                <p data-bind="text: Description"></p>
+            </div>
+        </div>
+    </div>
 <form data-bind="submit: addResponsibility">
     <div class="form-horizontal well">
         <fieldset>
@@ -105,30 +112,47 @@
                     //DO STUFF WITH DATA
                     var mapped = $.map(data, function (item) { return new Responsibility(item) });
                     self.responsibilities(mapped);
-                });
+        });
+
+        self.deleteResponsibility = function(data, event) {
+            $.ajax({
+                type: "DELETE",
+                contentType: "application/json; charset=utf-8",
+                url: "/api/Responsibility/" + data.Id(),                
+                success: function (data) {
+                    
+                },
+                error: function (error) {
+                    jsonValue = jQuery.parseJSON(error.responseText);
+                    //jError('An error has occurred while saving the new part source: ' + jsonValue, { TimeShown: 3000 });
+                }
+            });
+
+            self.responsibilities.remove(data);
+        };
 
         self.addResponsibility = function (element) {
             self.newResponsibility().Name(element.name.value);
             self.newResponsibility().Description(element.description.value);
             this.debugJson(ko.toJSON(self.newResponsibility));
-                $.ajax({
-                    type: "POST",
-                    dataType: "json",
-                    contentType: "application/json; charset=utf-8",
-                    url: "/api/Responsibility",
-                    data: ko.toJSON(self.newResponsibility),
-                    success: function (data) {
-                        self.newResponsibility.Name("taco");
-                        self.newResponsibility.Description("");
-                    },
-                    error: function (error) {
-                        jsonValue = jQuery.parseJSON(error.responseText);
-                        //jError('An error has occurred while saving the new part source: ' + jsonValue, { TimeShown: 3000 });
-                    }
-                });
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                url: "/api/Responsibility",
+                data: ko.toJSON(self.newResponsibility),
+                success: function (data) {
+                    self.responsibilities.push(new Responsibility(data));
+                    self.newResponsibility().Name("");
+                    self.newResponsibility().Description("");
+                },
+                error: function (error) {
+                    jsonValue = jQuery.parseJSON(error.responseText);
+                    //jError('An error has occurred while saving the new part source: ' + jsonValue, { TimeShown: 3000 });
+                }
+            });
 
-                    self.responsibilities.push(new Responsibility(self.newResponsibility));
-                    self.newResponsibility(new Responsibility({ Name: "", Description: "", PositionId: @Model.Id }));
+            self.newResponsibility(new Responsibility({ Name: "", Description: "", PositionId: @Model.Id }));
         };
 
         self.updateResponsibility = function (item) {
