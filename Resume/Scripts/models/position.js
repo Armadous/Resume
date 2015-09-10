@@ -3,7 +3,7 @@
 Positions = Backbone.Collection.extend({
     model: Position,
     url: function () {
-        return '/api/position/' + this.user + '?$select=Title,PositionId,Description,Company,StartDate,EndDate&$orderby=StartDate%20desc';
+        return '/api/position/user/' + this.user + '?$select=Title,PositionId,Description,Company,StartDate,EndDate&$orderby=StartDate%20desc';
     },
 
     initialize: function (model, options) {

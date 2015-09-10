@@ -29,8 +29,9 @@
             contentType: false,
             processData: false,
             success: function (fileInfo) {
-                $('#@(ViewData.TemplateInfo.HtmlFieldPrefix)preview').attr("src", '@Url.Content("~/api/UserFile/")' + fileInfo.UserFileId);
-                $('#@(ViewData.TemplateInfo.HtmlFieldPrefix)iconid').val(fileInfo.UserFileId);
+                debugger;
+                $('#@(ViewData.TemplateInfo.HtmlFieldPrefix)preview').attr("src", '@Url.Content("~/api/UserFile/")' + fileInfo.Id);
+                $('#@(ViewData.TemplateInfo.HtmlFieldPrefix)iconid').val(fileInfo.Id);
             }
         });
     }

@@ -10,25 +10,31 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using Resume.Models;
 using System.Web.Http.OData;
+using NHibernate;
+using NHibernate.Linq;
 
 namespace Resume.api
 {
     public class SkillController : ApiController
     {
-        private ResumeDb db = new ResumeDb();
+        private readonly ISession db;
+        public SkillController(ISession session)
+        {
+            db = session;
+        }
 
         // GET api/Skill
         [EnableQuery]
         public IQueryable<Skill> GetSkills(string user)
         {
-            return db.Skills.Where(s => s.OwnerIdentity == user).ToList().AsQueryable();
+            return db.Query<Skill>().Where(s => s.OwnerIdentity == user).ToList().AsQueryable();
         }
 
         // GET api/Skill/5
         [ResponseType(typeof(Skill))]
         public IHttpActionResult GetSkill(int id)
         {
-            Skill skill = db.Skills.Find(id);
+            Skill skill = db.Get<Skill>(id);
             if (skill == null)
             {
                 return NotFound();
@@ -38,6 +44,7 @@ namespace Resume.api
         }
 
         // PUT api/Skill/5
+        [Authorize]
         public IHttpActionResult PutSkill(int id, Skill skill)
         {
             if (!ModelState.IsValid)
@@ -50,28 +57,21 @@ namespace Resume.api
                 return BadRequest();
             }
 
-            db.Entry(skill).State = EntityState.Modified;
+            // Ownership reassignment is not allows
+            if (skill.OwnerIdentity != User.Identity.Name)
+                return BadRequest();
 
-            try
+            using(var tx = db.BeginTransaction())
             {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!SkillExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                db.SaveOrUpdate(skill);
+                tx.Commit();
             }
 
             return StatusCode(HttpStatusCode.NoContent);
         }
 
         // POST api/Skill
+        [Authorize]
         [ResponseType(typeof(Skill))]
         public IHttpActionResult PostSkill(Skill skill)
         {
@@ -80,24 +80,37 @@ namespace Resume.api
                 return BadRequest(ModelState);
             }
 
-            db.Skills.Add(skill);
-            db.SaveChanges();
+            // Ownership reassignment is not allows
+            if (skill.OwnerIdentity != User.Identity.Name)
+                return BadRequest();
+
+            db.Save(skill);
 
             return CreatedAtRoute("DefaultApi", new { id = skill.Id }, skill);
         }
 
         // DELETE api/Skill/5
+        [Authorize]
         [ResponseType(typeof(Skill))]
         public IHttpActionResult DeleteSkill(int id)
         {
-            Skill skill = db.Skills.Find(id);
+            Skill skill = db.Get<Skill>(id);
             if (skill == null)
             {
                 return NotFound();
             }
 
-            db.Skills.Remove(skill);
-            db.SaveChanges();
+            // Are you allowed to delete this?
+            if(skill.OwnerIdentity != User.Identity.Name)
+            {
+                return BadRequest();
+            }
+
+            using(var tx = db.BeginTransaction())
+            {
+                db.Delete(skill);
+                tx.Commit();
+            }
 
             return Ok(skill);
         }
@@ -113,7 +126,7 @@ namespace Resume.api
 
         private bool SkillExists(int id)
         {
-            return db.Skills.Count(e => e.Id == id) > 0;
+            return db.Get<Skill>(id) != null;
         }
     }
 }

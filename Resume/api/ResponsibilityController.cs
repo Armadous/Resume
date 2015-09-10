@@ -9,25 +9,31 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Resume.Models;
+using NHibernate;
+using NHibernate.Linq;
 
 namespace Resume.api
 {
     public class ResponsibilityController : ApiController
     {
-        private ResumeDb db = new ResumeDb();
+        private readonly ISession db;
+        public ResponsibilityController(ISession session)
+        {
+            db = session;
+        }
 
         // GET api/Responsibility
         [Queryable]
         public IQueryable<Responsibility> GetResponsibilities()
         {
-            return db.Responsibilities.ToList().AsQueryable();
+            return db.Query<Responsibility>().AsQueryable();
         }
 
         // GET api/Responsibility/5
         [ResponseType(typeof(Responsibility))]
         public IHttpActionResult GetResponsibility(int id)
         {
-            Responsibility responsibility = db.Responsibilities.Find(id);
+            Responsibility responsibility = db.Get<Responsibility>(id);
             if (responsibility == null)
             {
                 return NotFound();
@@ -36,40 +42,7 @@ namespace Resume.api
             return Ok(responsibility);
         }
 
-        // PUT api/Responsibility/5
-        public IHttpActionResult PutResponsibility(int id, Responsibility responsibility)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != responsibility.Id)
-            {
-                return BadRequest();
-            }
-
-            db.Entry(responsibility).State = EntityState.Modified;
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ResponsibilityExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
+        [Authorize]
         // POST api/Responsibility
         [ResponseType(typeof(Responsibility))]
         public IHttpActionResult PostResponsibility(Responsibility responsibility)
@@ -79,26 +52,37 @@ namespace Resume.api
                 return BadRequest(ModelState);
             }
 
-            db.Responsibilities.Add(responsibility);
-            db.SaveChanges();
+            responsibility.Position = db.Get<Position>(responsibility.PositionId);
+            responsibility.Position.Responsibilities.Add(responsibility);
+            db.Save(responsibility);
 
             return CreatedAtRoute("DefaultApi", new { id = responsibility.Id }, responsibility);
         }
 
         // DELETE api/Responsibility/5
+        [Authorize]
         [ResponseType(typeof(Responsibility))]
         public IHttpActionResult DeleteResponsibility(int id)
         {
-            Responsibility responsibility = db.Responsibilities.Find(id);
+            Responsibility responsibility = db.Get<Responsibility>(id);
             if (responsibility == null)
             {
                 return NotFound();
             }
 
-            db.Responsibilities.Remove(responsibility);
-            db.SaveChanges();
+            // Can you delete this?
+            if(responsibility.Position.OwnerIdentity != User.Identity.Name)
+            {
+                return BadRequest();
+            }
 
-            return Ok(responsibility);
+            using(var tx = db.BeginTransaction())
+            {
+                db.Delete(responsibility);
+                tx.Commit();
+            }
+
+            return Ok();
         }
 
         protected override void Dispose(bool disposing)
@@ -112,7 +96,7 @@ namespace Resume.api
 
         private bool ResponsibilityExists(int id)
         {
-            return db.Responsibilities.Count(e => e.Id == id) > 0;
+            return db.Get<Responsibility>(id) != null;
         }
     }
 }

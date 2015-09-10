@@ -13,6 +13,8 @@ namespace Resume.Models
 
         public virtual string LocalFileName { get; set; }
 
+        public virtual string OwnerIdentity { get; set; }
+
         public virtual Guid FileGuid { get; set; }
     }
 }

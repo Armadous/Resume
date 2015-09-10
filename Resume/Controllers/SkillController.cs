@@ -8,24 +8,24 @@ using System.Web;
 using System.Web.Mvc;
 using Resume.Models;
 using NHibernate;
+using NHibernate.Linq;
 
 namespace Resume.Controllers
 {
     [Authorize]
     public class SkillController : Controller
     {
-        private ResumeDb db = new ResumeDb();
 
-        private readonly ISession _db;
+        private readonly ISession db;
         public SkillController(ISession session)
         {
-            _db = session;
+            db = session;
         }
 
         // GET: /Skill/
         public ActionResult Index()
         {
-            return View(db.Skills.Where(s => s.OwnerIdentity == User.Identity.Name).ToList());
+            return View(db.Query<Skill>().Where(s => s.OwnerIdentity == User.Identity.Name).ToList());
         }
 
         // GET: /Skill/Details/5
@@ -35,7 +35,7 @@ namespace Resume.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Skill skill = db.Skills.Find(id);
+            Skill skill = db.Get<Skill>(id);
             if (skill == null)
             {
                 return HttpNotFound();
@@ -58,13 +58,12 @@ namespace Resume.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "SkillId,Name,Description,Level,SmallIconId,MediumIconId,LargeIconId")] Skill skill)
+        public ActionResult Create([Bind(Include = "Name,Description,Level,SmallIconId,MediumIconId,LargeIconId")] Skill skill)
         {
             skill.OwnerIdentity = User.Identity.Name;
             if (ModelState.IsValid)
             {
-                db.Skills.Add(skill);
-                db.SaveChanges();
+                db.Save(skill);
                 return RedirectToAction("Index");
             }
 
@@ -78,7 +77,7 @@ namespace Resume.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Skill skill = db.Skills.Find(id);
+            Skill skill = db.Get<Skill>(id);
             if (skill == null)
             {
                 return HttpNotFound();
@@ -96,10 +95,10 @@ namespace Resume.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "SkillId,Name,Description,Level,SmallIconId,MediumIconId,LargeIconId")] Skill skill)
+        public ActionResult Edit([Bind(Include = "Id,Name,Description,Level,SmallIconId,MediumIconId,LargeIconId")] Skill skill)
         {
             // Can the user update this item?
-            var existingSkill = db.Skills.AsNoTracking().SingleOrDefault(s => s.Id == skill.Id);
+            var existingSkill = db.Get<Skill>(skill.Id);
             if (existingSkill == null)
             {
                 return HttpNotFound();
@@ -114,8 +113,11 @@ namespace Resume.Controllers
 
             if (ModelState.IsValid)
             {
-                db.Entry(skill).State = EntityState.Modified;
-                db.SaveChanges();
+                using(var ctx = db.BeginTransaction())
+                {
+                    db.Merge<Skill>(skill);
+                    ctx.Commit();
+                }
                 return RedirectToAction("Index");
             }
             return View(skill);
@@ -128,7 +130,7 @@ namespace Resume.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Skill skill = db.Skills.Find(id);
+            Skill skill = db.Get<Skill>(id);
             if (skill == null)
             {
                 return HttpNotFound();
@@ -145,7 +147,7 @@ namespace Resume.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Skill skill = db.Skills.Find(id);
+            Skill skill = db.Get<Skill>(id);
             if (skill == null)
             {
                 return HttpNotFound();
@@ -154,8 +156,12 @@ namespace Resume.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            db.Skills.Remove(skill);
-            db.SaveChanges();
+
+            using(var tx = db.BeginTransaction())
+            {
+                db.Delete(skill);
+                tx.Commit();
+            }
             return RedirectToAction("Index");
         }
 

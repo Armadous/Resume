@@ -15,7 +15,8 @@
         <div class="form-horizontal">
             <hr />
             @Html.ValidationSummary(true)
-            @Html.HiddenFor(model => model.SkillId)
+            @Html.HiddenFor(model => model.Id)
+            @Html.HiddenFor(model => model.OwnerIdentity)
 
             <fieldset>
                 <legend>Create Skill</legend>
