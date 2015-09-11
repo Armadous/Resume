@@ -7,18 +7,24 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Resume.Models;
+using NHibernate;
+using NHibernate.Linq;
 
-namespace Resume.Views
+namespace Resume.Controllers
 {
     [Authorize]
     public class ExperienceController : Controller
     {
-        private ResumeDb db = new ResumeDb();
+        private readonly ISession db;
+        public ExperienceController(ISession session)
+        {
+            db = session;
+        }   
 
         // GET: /Experience/
         public ActionResult Index()
         {
-            var experiences = db.Experiences.Where(e => e.Responsibility.Position.OwnerIdentity == User.Identity.Name).Include(e => e.Responsibility).Include(e => e.Skill);
+            var experiences = db.Query<Experience>().Where(e => e.Responsibility.Position.OwnerIdentity == User.Identity.Name).Include(e => e.Responsibility).Include(e => e.Skill);
             return View(experiences.ToList());
         }
 
@@ -29,7 +35,7 @@ namespace Resume.Views
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Experience experience = db.Experiences.Find(id);
+            Experience experience = db.Get<Experience>(id);
             if (experience == null)
             {
                 return HttpNotFound();
@@ -44,8 +50,8 @@ namespace Resume.Views
         // GET: /Experience/Create
         public ActionResult Create()
         {
-            ViewBag.ResponsibilityId = new SelectList(db.Responsibilities.Where(r => r.Position.OwnerIdentity == User.Identity.Name), "ResponsibilityId", "Name");
-            ViewBag.SkillId = new SelectList(db.Skills.Where(s => s.OwnerIdentity == User.Identity.Name), "SkillId", "Name");
+            ViewBag.ResponsibilityId = new SelectList(db.Query<Responsibility>().Where(r => r.Position.OwnerIdentity == User.Identity.Name), "Id", "Name");
+            ViewBag.SkillId = new SelectList(db.Query<Skill>().Where(s => s.OwnerIdentity == User.Identity.Name), "Id", "Name");
             return View();
         }
 
@@ -54,17 +60,21 @@ namespace Resume.Views
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include="ExperienceId,Value,ResponsibilityId,SkillId")] Experience experience)
+        public ActionResult Create([Bind(Include="Value,ResponsibilityId,SkillId")] Experience experience)
         {
             if (ModelState.IsValid)
             {
-                db.Experiences.Add(experience);
-                db.SaveChanges();
+                experience.Responsibility = db.Get<Responsibility>(experience.ResponsibilityId);
+                experience.Responsibility.Experiences.Add(experience);
+                experience.Skill = db.Get<Skill>(experience.SkillId);
+                experience.Skill.Experiences.Add(experience);
+                db.Save(experience);
+
                 return RedirectToAction("Index");
             }
 
-            ViewBag.ResponsibilityId = new SelectList(db.Responsibilities, "ResponsibilityId", "Name", experience.ResponsibilityId);
-            ViewBag.SkillId = new SelectList(db.Skills, "SkillId", "Name", experience.SkillId);
+            ViewBag.ResponsibilityId = new SelectList(db.Query<Responsibility>().Where(r => r.Position.OwnerIdentity == User.Identity.Name), "Id", "Name");
+            ViewBag.SkillId = new SelectList(db.Query<Skill>().Where(s => s.OwnerIdentity == User.Identity.Name), "Id", "Name");
             return View(experience);
         }
 
@@ -75,7 +85,7 @@ namespace Resume.Views
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Experience experience = db.Experiences.Find(id);
+            Experience experience = db.Get<Experience>(id);
             if (experience == null)
             {
                 return HttpNotFound();
@@ -84,8 +94,9 @@ namespace Resume.Views
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ViewBag.ResponsibilityId = new SelectList(db.Responsibilities, "ResponsibilityId", "Name", experience.ResponsibilityId);
-            ViewBag.SkillId = new SelectList(db.Skills, "SkillId", "Name", experience.SkillId);
+
+            ViewBag.ResponsibilityId = new SelectList(db.Query<Responsibility>().Where(r => r.Position.OwnerIdentity == User.Identity.Name), "Id", "Name", experience.ResponsibilityId);
+            ViewBag.SkillId = new SelectList(db.Query<Skill>().Where(s => s.OwnerIdentity == User.Identity.Name), "Id", "Name", experience.SkillId);
             return View(experience);
         }
 
@@ -94,10 +105,10 @@ namespace Resume.Views
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include="ExperienceId,Value,ResponsibilityId,SkillId")] Experience experience)
+        public ActionResult Edit([Bind(Include="Id,Value,ResponsibilityId,SkillId")] Experience experience)
         {
             // Can the user update this item?
-            var existingExperience = db.Experiences.AsNoTracking().SingleOrDefault(e => e.ExperienceId == experience.ExperienceId);
+            var existingExperience = db.Get<Experience>(experience.Id);
             if (existingExperience == null)
             {
                 return HttpNotFound();
@@ -110,12 +121,17 @@ namespace Resume.Views
 
             if (ModelState.IsValid)
             {
-                db.Entry(experience).State = EntityState.Modified;
-                db.SaveChanges();
+                using(var tx = db.BeginTransaction())
+                {
+                    experience.Skill = db.Get<Skill>(experience.SkillId);
+                    experience.Responsibility = db.Get<Responsibility>(experience.ResponsibilityId);
+                    db.Merge<Experience>(experience);
+                    tx.Commit();
+                }
                 return RedirectToAction("Index");
             }
-            ViewBag.ResponsibilityId = new SelectList(db.Responsibilities, "ResponsibilityId", "Name", experience.ResponsibilityId);
-            ViewBag.SkillId = new SelectList(db.Skills, "SkillId", "Name", experience.SkillId);
+            ViewBag.ResponsibilityId = new SelectList(db.Query<Responsibility>().Where(r => r.Position.OwnerIdentity == User.Identity.Name), "Id", "Name", experience.ResponsibilityId);
+            ViewBag.SkillId = new SelectList(db.Query<Skill>().Where(s => s.OwnerIdentity == User.Identity.Name), "Id", "Name", experience.SkillId);
             return View(experience);
         }
 
@@ -126,7 +142,7 @@ namespace Resume.Views
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Experience experience = db.Experiences.Find(id);
+            Experience experience = db.Get<Experience>(id);
             if (experience == null)
             {
                 return HttpNotFound();
@@ -143,7 +159,7 @@ namespace Resume.Views
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Experience experience = db.Experiences.Find(id);
+            Experience experience = db.Get<Experience>(id);
             if (experience == null)
             {
                 return HttpNotFound();
@@ -152,8 +168,12 @@ namespace Resume.Views
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            db.Experiences.Remove(experience);
-            db.SaveChanges();
+            using(var tx = db.BeginTransaction())
+            {
+                db.Delete(experience);
+                tx.Commit();
+            }
+            
             return RedirectToAction("Index");
         }
 

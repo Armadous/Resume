@@ -12,23 +12,30 @@ using Resume.Models;
 using System.IO;
 using System.Threading.Tasks;
 using System.Net.Http.Headers;
+using NHibernate;
+using NHibernate.Linq;
 
 namespace Resume.api
 {
+    [Authorize]
     public class UserFileController : ApiController
     {
-        private ResumeDb db = new ResumeDb();
+        private readonly ISession db;
+        public UserFileController(ISession session)
+        {
+            db = session;
+        }
 
         // GET api/UserFile
         public IQueryable<UserFile> GetUserFiles()
         {
-            return db.UserFiles;
+            return db.Query<UserFile>().Where(f => f.OwnerIdentity == User.Identity.Name);
         }
 
         // GET api/UserFile/5
         public HttpResponseMessage GetUserFile(int id)
         {
-            UserFile userfile = db.UserFiles.Find(id);
+            UserFile userfile = db.Get<UserFile>(id);
             var response = new HttpResponseMessage();
             if (userfile == null)
             {
@@ -41,40 +48,6 @@ namespace Resume.api
             response.Content.Headers.ContentType = new MediaTypeHeaderValue(userfile.ContentType);            
 
             return response;
-        }
-
-        // PUT api/UserFile/5
-        public IHttpActionResult PutUserFile(int id, UserFile userfile)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != userfile.UserFileId)
-            {
-                return BadRequest();
-            }
-
-            db.Entry(userfile).State = EntityState.Modified;
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserFileExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return StatusCode(HttpStatusCode.NoContent);
         }
 
         // POST api/UserFile
@@ -97,12 +70,16 @@ namespace Resume.api
 
             var fileInfo = new FileInfo(data.LocalFileName);
 
-            var record = new UserFile() { FileName = fileName, LocalFileName = fileInfo.Name, ContentType = data.Headers.ContentType.ToString(), FileGuid = Guid.NewGuid() };
-            using (var db = new ResumeDb())
-            {
-                db.UserFiles.Add(record);
-                db.SaveChanges();
-            }
+            var record = new UserFile() 
+            { 
+                FileName = fileName, 
+                LocalFileName = fileInfo.Name, 
+                ContentType = data.Headers.ContentType.ToString(), 
+                FileGuid = Guid.NewGuid(), 
+                OwnerIdentity = User.Identity.Name 
+            };
+
+            db.Save(record);
 
             return Ok(record);
         }
@@ -111,14 +88,21 @@ namespace Resume.api
         [ResponseType(typeof(UserFile))]
         public IHttpActionResult DeleteUserFile(int id)
         {
-            UserFile userfile = db.UserFiles.Find(id);
+            UserFile userfile = db.Get<UserFile>(id);
             if (userfile == null)
             {
                 return NotFound();
             }
 
-            db.UserFiles.Remove(userfile);
-            db.SaveChanges();
+            // Can you delete this?
+            if (userfile.OwnerIdentity != User.Identity.Name)
+                return BadRequest();
+
+            using(var tx = db.BeginTransaction())
+            {
+                db.Delete(userfile);
+                tx.Commit();
+            }
 
             return Ok(userfile);
         }
@@ -134,7 +118,7 @@ namespace Resume.api
 
         private bool UserFileExists(int id)
         {
-            return db.UserFiles.Count(e => e.UserFileId == id) > 0;
+            return db.Get<UserFile>(id) != null;
         }
     }
 }

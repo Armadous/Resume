@@ -9,25 +9,32 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Resume.Models;
+using NHibernate;
+using NHibernate.Linq;
 
 namespace Resume.api
 {
     public class ExperienceController : ApiController
     {
-        private ResumeDb db = new ResumeDb();
+        private readonly ISession db;
+        public ExperienceController(ISession session)
+        {
+            db = session;
+        }   
 
         // GET api/Experience
+        [Route("api/experience/user/{user}")]
         [Queryable]
-        public IQueryable<Experience> GetExperiences()
+        public IQueryable<Experience> GetExperiences(string user)
         {
-            return db.Experiences.ToList().AsQueryable();
+            return db.Query<Experience>().Where(e => e.Responsibility.Position.OwnerIdentity == User.Identity.Name ).AsQueryable();
         }
 
         // GET api/Experience/5
         [ResponseType(typeof(Experience))]
         public IHttpActionResult GetExperience(int id)
         {
-            Experience experience = db.Experiences.Find(id);
+            Experience experience = db.Get<Experience>(id);
             if (experience == null)
             {
                 return NotFound();
@@ -36,83 +43,49 @@ namespace Resume.api
             return Ok(experience);
         }
 
-        // PUT api/Experience/5
-        public IHttpActionResult PutExperience(int id, Experience experience)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+        //// POST api/Experience
+        //[ResponseType(typeof(Experience))]
+        //public IHttpActionResult PostExperience(Experience experience)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
 
-            if (id != experience.ExperienceId)
-            {
-                return BadRequest();
-            }
+        //    db.Experiences.Add(experience);
+        //    db.SaveChanges();
 
-            db.Entry(experience).State = EntityState.Modified;
+        //    return CreatedAtRoute("DefaultApi", new { id = experience.Id }, experience);
+        //}
 
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ExperienceExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+        //// DELETE api/Experience/5
+        //[ResponseType(typeof(Experience))]
+        //public IHttpActionResult DeleteExperience(int id)
+        //{
+        //    Experience experience = db.Experiences.Find(id);
+        //    if (experience == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return StatusCode(HttpStatusCode.NoContent);
-        }
+        //    db.Experiences.Remove(experience);
+        //    db.SaveChanges();
 
-        // POST api/Experience
-        [ResponseType(typeof(Experience))]
-        public IHttpActionResult PostExperience(Experience experience)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+        //    return Ok(experience);
+        //}
 
-            db.Experiences.Add(experience);
-            db.SaveChanges();
+        //protected override void Dispose(bool disposing)
+        //{
+        //    if (disposing)
+        //    {
+        //        db.Dispose();
+        //    }
+        //    base.Dispose(disposing);
+        //}
 
-            return CreatedAtRoute("DefaultApi", new { id = experience.ExperienceId }, experience);
-        }
-
-        // DELETE api/Experience/5
-        [ResponseType(typeof(Experience))]
-        public IHttpActionResult DeleteExperience(int id)
-        {
-            Experience experience = db.Experiences.Find(id);
-            if (experience == null)
-            {
-                return NotFound();
-            }
-
-            db.Experiences.Remove(experience);
-            db.SaveChanges();
-
-            return Ok(experience);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
-        private bool ExperienceExists(int id)
-        {
-            return db.Experiences.Count(e => e.ExperienceId == id) > 0;
-        }
+        //private bool ExperienceExists(int id)
+        //{
+        //    return db.Experiences.Count(e => e.Id == id) > 0;
+        //}
     }
 }

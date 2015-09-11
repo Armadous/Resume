@@ -5,16 +5,16 @@ using System.Web;
 
 namespace Resume.Models
 {
-    public class UserFile
+    public class UserFile : Entity
     {
-        public int UserFileId { get; set; }
+        public virtual string FileName { get; set; }
 
-        public string FileName { get; set; }
+        public virtual string ContentType { get; set; }
 
-        public string ContentType { get; set; }
+        public virtual string LocalFileName { get; set; }
 
-        public string LocalFileName { get; set; }
+        public virtual string OwnerIdentity { get; set; }
 
-        public Guid FileGuid { get; set; }
+        public virtual Guid FileGuid { get; set; }
     }
 }

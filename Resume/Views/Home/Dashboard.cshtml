@@ -36,72 +36,147 @@
 
     @Scripts.Render("~/Scripts/models/position.js")
     <script type="text/javascript">
-    $(function () {
-        //View model binding for positions
-        var view_model = {
-            positions: kb.collectionObservable(new Positions([], {user: '@ViewBag.User'}))
-        };
+        $(function () {
+            //View model binding for positions
+            var view_model = {
+                positions: kb.collectionObservable(new Positions([], { user: '@ViewBag.User' }))
+            };
 
-        ko.applyBindings(view_model, $('#responsibilities')[0]);
+            ko.applyBindings(view_model, $('#responsibilities')[0]);
 
-        var skills;
+            var skills;
 
-        //unique skills
-        $.get("/api/skill/@(ViewBag.User)?$filter=HasExperience%20eq%20true", function (data) {
-            skills = data;
+            //unique skills
+            $.get("/api/skill/user/@(ViewBag.User)?$filter=HasExperience%20eq%20true", function (data) {
+                skills = data;
+
+                $.ajax({
+                    type: "GET",
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    url: "/api/position/user/@(ViewBag.User)",
+                    success: function (positions) {
+
+                        var series = [];
+                        _.each(positions, function (position, index, list) {
+                            debugger;
+                            var responsibilites = position.Responsibilities;
+                            var experiences = _(responsibilites).map(function (responsibility) { return responsibility.Experiences; });
+                            var flatExperiences = _.flatten(experiences);
+                            var experiencesBySkill = _.groupBy(flatExperiences, function (experience) { return experience.SkillId; })
+                            var positionSkillSummary = _.map(experiencesBySkill, function (expGroup) {
+                                var skillSummary = _.reduce(expGroup, function (memo, experience) {
+                                    //Sum skill group values
+                                    memo.Value = memo.Value + experience.Value
+                                    return memo;
+                                });
+                                return skillSummary;
+                            });
+
+                            var mappedSkillSummary = [];
+                            _.each(skills, function (skill) {
+                                var skillValue = _.find(positionSkillSummary, function (summary) { return skill.Id == summary.SkillId });
+                                if (skillValue)
+                                    mappedSkillSummary.push(skillValue.Value);
+                                else
+                                    mappedSkillSummary.push(null);
+                            })
+
+                            series.push({
+                                name: position.Title,
+                                data: mappedSkillSummary
+                            })
+                        });
+
+                        $('#positionSKills').highcharts({
+                            chart: {
+                                type: 'column',
+                                spacingBottom: 50
+                            },
+                            title: {
+                                text: 'Experience by Position'
+                            },
+                            xAxis: {
+                                categories: _(skills).pluck("Name")
+                            },
+                            yAxis: {
+                                min: 0,
+                                title: {
+                                    text: 'Experience'
+                                },
+                                stackLabels: {
+                                    enabled: true,
+                                    style: {
+                                        fontWeight: 'bold',
+                                        color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+                                    }
+                                }
+                            },
+                            legend: {
+                                align: 'left',
+                                x: 70,
+                                verticalAlign: 'bottom',
+                                y: 40,
+                                floating: true,
+                                backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
+                                borderColor: '#CCC',
+                                borderWidth: 1,
+                                shadow: false
+                            },
+                            tooltip: {
+                                formatter: function () {
+                                    return '<b>' + this.x + '</b><br/>' +
+                                        this.series.name + ': ' + this.y + '<br/>' +
+                                        'Total: ' + this.point.stackTotal;
+                                }
+                            },
+                            plotOptions: {
+                                column: {
+                                    stacking: 'normal',
+                                    dataLabels: {
+                                        enabled: true,
+                                        color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
+                                        style: {
+                                            textShadow: '0 0 3px black, 0 0 3px black'
+                                        }
+                                    }
+                                }
+                            },
+                            series: series
+                        });
+                    },
+                    error: function (error) {
+                        jsonValue = jQuery.parseJSON(error.responseText);
+                        //jError('An error has occurred while saving the new part source: ' + jsonValue, { TimeShown: 3000 });
+                    }
+                });
+
+            }, "json")
 
             $.ajax({
                 type: "GET",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
-                url: "/api/position/@(ViewBag.User)",
-                success: function (positions) {
+                url: "/api/skill/user/@(ViewBag.User)?orderby=Level desc",
+                success: function (data) {
+                    var categores = _.pluck(data, 'Name');
+                    var values = _.pluck(data, 'Level');
 
-                    var series = [];
-                    _.each(positions, function (position, index, list) {
-                        var responsibilites = position.Responsibilities;
-                        var experiences = _(responsibilites).map(function (responsibility) { return responsibility.Experiences; });
-                        var flatExperiences = _.flatten(experiences);
-                        var experiencesBySkill = _.groupBy(flatExperiences, function (experience) { return experience.SkillId; })
-                        var positionSkillSummary = _.map(experiencesBySkill, function (expGroup) {
-                            var skillSummary = _.reduce(expGroup, function (memo, experience) {
-                                //Sum skill group values
-                                memo.Value = memo.Value + experience.Value
-                                return memo;
-                            });
-                            return skillSummary;
-                        });
-
-                        var mappedSkillSummary = [];
-                        _.each(skills, function (skill) {
-                            var skillValue = _.find(positionSkillSummary, function (summary) { return skill.SkillId == summary.SkillId });
-                            if (skillValue)
-                                mappedSkillSummary.push(skillValue.Value);
-                            else
-                                mappedSkillSummary.push(null);
-                        })
-
-                        series.push({
-                            name: position.Title,
-                            data: mappedSkillSummary
-                        })
-                    });
-
-                    $('#positionSKills').highcharts({
+                    //Skill column chart
+                    var chart = $('#skillChart').highcharts({
                         chart: {
-                            type: 'column',
-                            spacingBottom: 50
+                            type: 'bar'
                         },
                         title: {
-                            text: 'Experience by Position'
+                            text: 'Skills'
                         },
                         xAxis: {
-                            categories: _(skills).pluck("Name")
+                            categories: categores
                         },
                         yAxis: {
                             min: 0,
                             title: {
-                                text: 'Experience'
+                                text: 'Skill Level'
                             },
                             stackLabels: {
                                 enabled: true,
@@ -112,24 +187,18 @@
                             }
                         },
                         legend: {
-                            align: 'left',
-                            x: 70,
-                            verticalAlign: 'bottom',
-                            y: 40,
-                            floating: true,
-                            backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
-                            borderColor: '#CCC',
-                            borderWidth: 1,
-                            shadow: false
+                            enabled: false
                         },
                         tooltip: {
                             formatter: function () {
                                 return '<b>' + this.x + '</b><br/>' +
-                                    this.series.name + ': ' + this.y + '<br/>' +
-                                    'Total: ' + this.point.stackTotal;
+                                    this.series.name + ': ' + this.y + '<br/>'
                             }
                         },
                         plotOptions: {
+                            series: {
+                                color: '#666666'
+                            },
                             column: {
                                 stacking: 'normal',
                                 dataLabels: {
@@ -141,7 +210,10 @@
                                 }
                             }
                         },
-                        series: series
+                        series: [{
+                            name: 'Skills',
+                            data: values
+                        }]
                     });
                 },
                 error: function (error) {
@@ -149,77 +221,6 @@
                     //jError('An error has occurred while saving the new part source: ' + jsonValue, { TimeShown: 3000 });
                 }
             });
-
-        }, "json")
-
-        $.ajax({
-            type: "GET",
-            dataType: "json",
-            contentType: "application/json; charset=utf-8",
-            url: "/api/skill/@(ViewBag.User)?orderby=Level desc",
-            success: function (data) {
-                var categores = _.pluck(data, 'Name');
-                var values = _.pluck(data, 'Level');
-
-                //Skill column chart
-                var chart = $('#skillChart').highcharts({
-                    chart: {
-                        type: 'bar'
-                    },
-                    title: {
-                        text: 'Skills'
-                    },
-                    xAxis: {
-                        categories: categores
-                    },
-                    yAxis: {
-                        min: 0,
-                        title: {
-                            text: 'Skill Level'
-                        },
-                        stackLabels: {
-                            enabled: true,
-                            style: {
-                                fontWeight: 'bold',
-                                color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
-                            }
-                        }
-                    },
-                    legend: {
-                        enabled: false
-                    },
-                    tooltip: {
-                        formatter: function () {
-                            return '<b>' + this.x + '</b><br/>' +
-                                this.series.name + ': ' + this.y + '<br/>'
-                        }
-                    },
-                    plotOptions: {
-                        series: {
-                            color: '#666666'
-                        },
-                        column: {
-                            stacking: 'normal',
-                            dataLabels: {
-                                enabled: true,
-                                color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
-                                style: {
-                                    textShadow: '0 0 3px black, 0 0 3px black'
-                                }
-                            }
-                        }
-                    },
-                    series: [{
-                        name: 'Skills',
-                        data: values
-                    }]
-                });
-            },
-            error: function (error) {
-                jsonValue = jQuery.parseJSON(error.responseText);
-                //jError('An error has occurred while saving the new part source: ' + jsonValue, { TimeShown: 3000 });
-            }
         });
-    });
-</script>
+    </script>
 }

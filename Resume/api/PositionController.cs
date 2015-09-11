@@ -10,25 +10,33 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using Resume.Models;
 using System.Web.Http.OData;
+using NHibernate;
+using NHibernate.Linq;
 
 namespace Resume.api
 {
     public class PositionController : ApiController
     {
-        private ResumeDb db = new ResumeDb();
+        private readonly ISession db;
+        public PositionController(ISession session)
+        {
+            db = session;
+        }
 
         // GET api/Position
         [EnableQuery]
+        [Route("api/position/user/{user}")]
         public IQueryable<Position> GetPositions(string user)
         {
-            return db.Positions.Where(p => p.OwnerIdentity == user).ToList().AsQueryable();
+            var positions = db.Query<Position>().Where(p => p.OwnerIdentity == user).FetchMany(p => p.Responsibilities).ThenFetchMany(r => r.Experiences).ThenFetch(e => e.Skill).ToList();
+            return positions.AsQueryable();
         }
 
         // GET api/Position/5
         [ResponseType(typeof(Position))]
         public IHttpActionResult GetPosition(int id)
         {
-            Position position = db.Positions.Find(id);
+            Position position = db.Get<Position>(id);
             if (position == null)
             {
                 return NotFound();
@@ -42,7 +50,7 @@ namespace Resume.api
         [ResponseType(typeof(List<Responsibility>))]
         public IHttpActionResult GetResponsibilities(int id)
         {
-            var position = db.Positions.Find(id);
+            var position = db.Get<Position>(id);
             if (position == null)
             {
                 return NotFound();
@@ -59,27 +67,19 @@ namespace Resume.api
                 return BadRequest(ModelState);
             }
 
-            if (id != position.PositionId)
+            if (id != position.Id)
             {
                 return BadRequest();
             }
 
-            db.Entry(position).State = EntityState.Modified;
+            // Ownership reassignment is not allows
+            if (position.OwnerIdentity != User.Identity.Name)
+                return BadRequest();
 
-            try
+            using (var tx = db.BeginTransaction())
             {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!PositionExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                db.SaveOrUpdate(position);
+                tx.Commit();
             }
 
             return StatusCode(HttpStatusCode.NoContent);
@@ -94,24 +94,36 @@ namespace Resume.api
                 return BadRequest(ModelState);
             }
 
-            db.Positions.Add(position);
-            db.SaveChanges();
+            // Ownership reassignment is not allows
+            if (position.OwnerIdentity != User.Identity.Name)
+                return BadRequest();
 
-            return CreatedAtRoute("DefaultApi", new { id = position.PositionId }, position);
+            db.Save(position);
+
+            return CreatedAtRoute("DefaultApi", new { id = position.Id }, position);
         }
 
         // DELETE api/Position/5
         [ResponseType(typeof(Position))]
         public IHttpActionResult DeletePosition(int id)
         {
-            Position position = db.Positions.Find(id);
+            Position position = db.Get<Position>(id);
             if (position == null)
             {
                 return NotFound();
             }
 
-            db.Positions.Remove(position);
-            db.SaveChanges();
+            // Are you allowed to delete this?
+            if (position.OwnerIdentity != User.Identity.Name)
+            {
+                return BadRequest();
+            }
+
+            using (var tx = db.BeginTransaction())
+            {
+                db.Delete(position);
+                tx.Commit();
+            }
 
             return Ok(position);
         }
@@ -127,7 +139,7 @@ namespace Resume.api
 
         private bool PositionExists(int id)
         {
-            return db.Positions.Count(e => e.PositionId == id) > 0;
+            return db.Get<Position>(id) != null;
         }
     }
 }
