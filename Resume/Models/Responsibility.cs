@@ -18,14 +18,14 @@ namespace Resume.Models
 
         public virtual int PositionId { get; set; }
 
-        public virtual IList<Experience> Experiences { get; set; }
+        public virtual ISet<Experience> Experiences { get; set; }
 
         public virtual IList<Tag> Tags { get; set; }
 
         public Responsibility()
         {
             Tags = new List<Tag>();
-            Experiences = new List<Experience>(); 
+            Experiences = new HashSet<Experience>(); 
         }
     }
 }

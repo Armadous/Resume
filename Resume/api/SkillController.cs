@@ -25,6 +25,7 @@ namespace Resume.api
 
         // GET api/Skill
         [EnableQuery]
+        [Route("api/skill/user/{user}")]
         public IQueryable<Skill> GetSkills(string user)
         {
             return db.Query<Skill>().Where(s => s.OwnerIdentity == user).ToList().AsQueryable();

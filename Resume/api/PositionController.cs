@@ -28,7 +28,8 @@ namespace Resume.api
         [Route("api/position/user/{user}")]
         public IQueryable<Position> GetPositions(string user)
         {
-            return db.Query<Position>().Where(p => p.OwnerIdentity == user).ToList().AsQueryable();
+            var positions = db.Query<Position>().Where(p => p.OwnerIdentity == user).FetchMany(p => p.Responsibilities).ThenFetchMany(r => r.Experiences).ThenFetch(e => e.Skill).ToList();
+            return positions.AsQueryable();
         }
 
         // GET api/Position/5

@@ -23,13 +23,13 @@ namespace Resume.Models
         [DisplayName("End Date")]
         public virtual DateTime? EndDate { get; set; }
 
-        public virtual IList<Responsibility> Responsibilities { get; set; }
+        public virtual ISet<Responsibility> Responsibilities { get; set; }
 
         public virtual IList<Tag> Tags { get; set; }
 
         public Position()
         {
-            Responsibilities = new List<Responsibility>();
+            Responsibilities = new HashSet<Responsibility>();
             Tags = new List<Tag>();
         }
     }
