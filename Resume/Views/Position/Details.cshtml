@@ -52,38 +52,43 @@
 
     </dl>
 </div>
+<div class="row">
     <div data-bind=" foreach: responsibilities">
-        <div class="row">
-            <div class="col-md-1" style="text-align:right">
-                <button type="button" class="btn btn-default" data-bind="click: $root.deleteResponsibility">
-                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                </button>
+        <div class="col-md-1" style="text-align:right">
+            <button type="button" class="btn btn-default" data-bind="click: $root.deleteResponsibility">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+            </button>
+        </div>
+        <div class="col-md-3">
+            <h3 style="margin-top:0" data-bind="text: Name"></h3>
+            <p data-bind="text: Description"></p>
+            <input type="text" class="dial" data-bind="value: Percentage">
+        </div>
+    </div>
+</div>
+<form class="well" data-bind="submit: addResponsibility">
+    <div class="form-inline row">
+        <div class="form-group col-md-4">
+            <h2>Add Responsibility</h2>
+            <label for="responsibilityName" class="control-label sr-only">Name</label>
+            <input placeholder="Responsibility Name" style="width:100%" id="responsibilityName" type="text" class="form-control" name="name" data-bind="value: newResponsibility.Name" />
+        </div>
+        <div class="form-group col-md-2" style="text-align:center">
+            <div>
+                <input name="Percentage" id="responsibilityPercentage" value="0" type="text" data-width="100" data-height="100" data-bind="value: newResponsibility.Percentage">
             </div>
-            <div class="col-md-5">
-                <h3 style="margin-top:0" data-bind="text: Name"></h3>
-                <p data-bind="text: Description"></p>
+            <span for="responsibilityPercentage" class="control-label">Percent</span>
+        </div>
+    </div>                
+    <div class="form-horizontal">
+        <div class="form-group">
+            <div class="col-md-6">
+                <span class="control-label">Description</span>
+                <textarea class="form-control" rows="3" name="description" data-bind="value: newResponsibility.Description"></textarea>
             </div>
         </div>
     </div>
-<form data-bind="submit: addResponsibility">
-    <div class="form-horizontal well">
-        <fieldset>
-            <legend>Add Responsibility</legend>
-            <div class="form-group">
-                <div class="col-md-4">
-                    <span class="control-label">Experience</span>
-                    <input type="text" class="form-control" name="name" data-bind="value: newResponsibility.Name" />
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-md-6">
-                    <span class="control-label">Description</span>
-                    <textarea class="form-control" rows="3" name="description" data-bind="value: newResponsibility.Description"></textarea>
-                </div>
-            </div>
-            <button type="submit" class="btn btn-primary">Add</button>
-        </fieldset>
-    </div>
+    <button type="submit" class="btn btn-primary">Add</button>        
 </form>
 
 <p>
@@ -95,71 +100,93 @@
 
 
 @section Scripts {
-        @Scripts.Render("~/bundles/jqueryval")
-        @Scripts.Render("~/bundles/knockout")
-        @Scripts.Render("~/Scripts/models/responsibility.js")
-        <script>
-    function PositionViewModel() {
-        var self = this;
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/knockout")
+    @Scripts.Render("~/Scripts/models/responsibility.js")
+    @Scripts.Render("~/bundles/jquery.knob")
+    <script>
+        var viewModel;
+        $(function() {
+            $("#responsibilityPercentage").knob({
+                'change': function(v){
+                    viewModel.newResponsibility().Percentage(v)
+                }
+            });
 
-        self.responsibilities = ko.observableArray([]);
-
-        self.newResponsibility = ko.observable(new Responsibility({ Name: "", Description: "", PositionId: @Model.Id }));
-
-        self.debugJson = ko.observable();
-
-        var positionData = $.getJSON("/api/position/@Model.Id/responsibilities", function (data) {
-                    //DO STUFF WITH DATA
-                    var mapped = $.map(data, function (item) { return new Responsibility(item) });
-                    self.responsibilities(mapped);
+            viewModel = new PositionViewModel();
+            ko.applyBindings(viewModel);
         });
 
-        self.deleteResponsibility = function(data, event) {
-            $.ajax({
-                type: "DELETE",
-                contentType: "application/json; charset=utf-8",
-                url: "/api/Responsibility/" + data.Id(),                
-                success: function (data) {
+        function PositionViewModel() {
+            var self = this;
+
+            self.responsibilities = ko.observableArray([]);
+
+            self.newResponsibility = ko.observable(new Responsibility({ Name: "", Description: "", PositionId: @Model.Id }));
+            self.newResponsibility().Percentage.subscribe(function(v){
+                $("#responsibilityPercentage").val(v).trigger('change');
+            });
+
+            self.debugJson = ko.observable();
+
+            var positionData = $.getJSON("/api/position/@Model.Id/responsibilities", function (data) {
+                        //DO STUFF WITH DATA
+                        var mapped = $.map(data, function (item) { return new Responsibility(item) });
+                        self.responsibilities(mapped);
+                        $(".dial").knob({
+                            readOnly: true
+                        });
+            });
+
+            self.deleteResponsibility = function(data, event) {
+                $.ajax({
+                    type: "DELETE",
+                    contentType: "application/json; charset=utf-8",
+                    url: "/api/Responsibility/" + data.Id(),                
+                    success: function (data) {
                     
-                },
-                error: function (error) {
-                    jsonValue = jQuery.parseJSON(error.responseText);
-                    //jError('An error has occurred while saving the new part source: ' + jsonValue, { TimeShown: 3000 });
-                }
-            });
+                    },
+                    error: function (error) {
+                        jsonValue = jQuery.parseJSON(error.responseText);
+                        //jError('An error has occurred while saving the new part source: ' + jsonValue, { TimeShown: 3000 });
+                    }
+                });
 
-            self.responsibilities.remove(data);
-        };
+                self.responsibilities.remove(data);
+            };
 
-        self.addResponsibility = function (element) {
-            self.newResponsibility().Name(element.name.value);
-            self.newResponsibility().Description(element.description.value);
-            this.debugJson(ko.toJSON(self.newResponsibility));
-            $.ajax({
-                type: "POST",
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                url: "/api/Responsibility",
-                data: ko.toJSON(self.newResponsibility),
-                success: function (data) {
-                    self.responsibilities.push(new Responsibility(data));
-                    self.newResponsibility().Name("");
-                    self.newResponsibility().Description("");
-                },
-                error: function (error) {
-                    jsonValue = jQuery.parseJSON(error.responseText);
-                    //jError('An error has occurred while saving the new part source: ' + jsonValue, { TimeShown: 3000 });
-                }
-            });
+            self.addResponsibility = function (element) {
+                self.newResponsibility().Name(element.name.value);
+                self.newResponsibility().Description(element.description.value);
+                self.newResponsibility().Percentage(element.Percentage.value);
+                this.debugJson(ko.toJSON(self.newResponsibility));
+                $.ajax({
+                    type: "POST",
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    url: "/api/Responsibility",
+                    data: ko.toJSON(self.newResponsibility),
+                    success: function (data) {
+                        self.responsibilities.push(new Responsibility(data));
+                        $(".dial").knob({
+                            readOnly: true
+                        });
+                        self.newResponsibility().Name("");
+                        self.newResponsibility().Description("");
+                        self.newResponsibility().Percentage(0);
+                    },
+                    error: function (error) {
+                        jsonValue = jQuery.parseJSON(error.responseText);
+                        //jError('An error has occurred while saving the new part source: ' + jsonValue, { TimeShown: 3000 });
+                    }
+                });
 
-            self.newResponsibility(new Responsibility({ Name: "", Description: "", PositionId: @Model.Id }));
-        };
+                self.newResponsibility(new Responsibility({ Name: "", Description: "", PositionId: @Model.Id }));
+            };
 
-        self.updateResponsibility = function (item) {
-            //TODO: Find the updated item and updated it.
+            self.updateResponsibility = function (item) {
+                //TODO: Find the updated item and updated it.
+            }
         }
-    }
-
-    ko.applyBindings(new PositionViewModel());
-        </script>
+    </script>
 }

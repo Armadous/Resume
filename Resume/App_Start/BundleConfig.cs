@@ -33,6 +33,10 @@ namespace Resume
                 "~/Content/css/select2.css",
                 "~/Content/css/select2-bootstrap.css"));
 
+            // Jquery Knob
+            bundles.Add(new ScriptBundle("~/bundles/jquery.knob").Include(
+                "~/Scripts/jquery.knob.js"));
+
             //TODO: Remove in favore of knockback control.
             // Knockout
             bundles.Add(new ScriptBundle("~/bundles/knockout").Include(
