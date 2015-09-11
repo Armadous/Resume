@@ -5,8 +5,8 @@ using System.Web;
 
 namespace Resume.Models
 {
-    public class Tag : Entity
+    public abstract class Entity
     {
-        public virtual string Name { get; set; }
+        public virtual int Id { get; set; }
     }
 }
