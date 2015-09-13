@@ -9,7 +9,7 @@ namespace Resume.IdentityMigrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationsEnabled = true;
             MigrationsDirectory = @"IdentityMigrations";
             ContextKey = "Resume.Models.ApplicationDbContext";
         }

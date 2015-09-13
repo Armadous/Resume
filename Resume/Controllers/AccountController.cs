@@ -62,6 +62,20 @@ namespace Resume.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        public ActionResult Settings()
+        {
+            var user = UserManager.FindById(User.Identity.GetUserId());
+
+            return View(user);
+        }
+
+        [HttpPost]
+        public ActionResult Settings(ApplicationUser user)
+        {
+            return View();
+        }
+
         //
         // GET: /Account/Register
         [AllowAnonymous]
@@ -241,6 +255,9 @@ namespace Resume.Controllers
             var result = await UserManager.AddLoginAsync(User.Identity.GetUserId(), loginInfo.Login);
             if (result.Succeeded)
             {
+                var returnUrl = Session["LinkLoginRedirect"];
+                if (returnUrl != null)
+                    return Redirect((string)returnUrl);
                 return RedirectToAction("Manage");
             }
             return RedirectToAction("Manage", new { Message = ManageMessageId.Error });
@@ -377,7 +394,7 @@ namespace Resume.Controllers
             }
         }
 
-        private class ChallengeResult : HttpUnauthorizedResult
+        public class ChallengeResult : HttpUnauthorizedResult
         {
             public ChallengeResult(string provider, string redirectUri) : this(provider, redirectUri, null)
             {

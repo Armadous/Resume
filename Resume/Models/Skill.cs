@@ -12,10 +12,13 @@ namespace Resume.Models
     {
         public virtual string OwnerIdentity { get; set; }
 
+        [Required]
         public virtual string Name { get; set; }
 
+        [Required]
         public virtual string Description { get; set; }
 
+        [Required]
         public virtual float Level { get; set; }
 
         //16x16

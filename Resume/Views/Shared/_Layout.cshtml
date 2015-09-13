@@ -22,8 +22,9 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    @if(User.Identity.IsAuthenticated)
+                    @if (User.Identity.IsAuthenticated)
                     {
+                        <li>@Html.ActionLink("My Dashboard", "Dashboard", "Home", new { user = @User.Identity.Name }, null)</li>
                         <li>@Html.ActionLink("Positions", "Index", "Position")</li>
                         <li>@Html.ActionLink("Skills", "Index", "Skill")</li>
                         <li>@Html.ActionLink("Experience", "Index", "Experience")</li>

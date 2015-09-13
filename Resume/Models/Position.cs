@@ -11,13 +11,17 @@ namespace Resume.Models
     {
         public virtual string OwnerIdentity { get; set; }
 
+        [Required]
         public virtual string Title { get; set; }
 
+        [Required]
         public virtual string Description { get; set; }
 
+        [Required]
         public virtual string Company { get; set; }
 
         [DisplayName("Start Date")]
+        [Required]
         public virtual DateTime StartDate { get; set; }
 
         [DisplayName("End Date")]

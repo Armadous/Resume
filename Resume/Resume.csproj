@@ -66,6 +66,12 @@
     <Reference Include="Iesi.Collections">
       <HintPath>..\packages\Iesi.Collections.4.0.0.4000\lib\net40\Iesi.Collections.dll</HintPath>
     </Reference>
+    <Reference Include="LinkedIn.Api.Client.Core">
+      <HintPath>..\packages\LinkedIn.1.3.3\lib\net45\LinkedIn.Api.Client.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="LinkedIn.Api.Client.Owin">
+      <HintPath>..\packages\LinkedIn.1.3.3\lib\net45\LinkedIn.Api.Client.Owin.dll</HintPath>
+    </Reference>
     <Reference Include="MarkdownDeep">
       <HintPath>..\packages\MarkdownDeep.Full.1.5\lib\.NetFramework 3.5\MarkdownDeep.dll</HintPath>
     </Reference>
@@ -147,6 +153,9 @@
     </Reference>
     <Reference Include="Ninject.WebApi.DependencyResolver">
       <HintPath>..\packages\Ninject.WebApi.DependencyResolver.0.1.4758.24814\lib\net45\Ninject.WebApi.DependencyResolver.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin.Security.Providers">
+      <HintPath>..\packages\Owin.Security.Providers.1.7.0\lib\net45\Owin.Security.Providers.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -264,6 +273,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PositionController.cs" />
+    <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Controllers\ResponsibilityController.cs" />
     <Compile Include="Controllers\SkillController.cs" />
     <Compile Include="Extensions\Attributes.cs" />
@@ -277,6 +287,10 @@
     <Compile Include="IdentityMigrations\201509070345502_Initial.cs" />
     <Compile Include="IdentityMigrations\201509070345502_Initial.Designer.cs">
       <DependentUpon>201509070345502_Initial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IdentityMigrations\201509130336359_WhatNow.cs" />
+    <Compile Include="IdentityMigrations\201509130336359_WhatNow.Designer.cs">
+      <DependentUpon>201509130336359_WhatNow.cs</DependentUpon>
     </Compile>
     <Compile Include="IdentityMigrations\Configuration.cs" />
     <Compile Include="Migrations\201404011713386_firstgo.cs" />
@@ -337,6 +351,8 @@
     <Compile Include="Models\Experience.cs" />
     <Compile Include="Models\NHibernateSessionFactory.cs" />
     <Compile Include="Models\NHibernateSessionFactoryProvider.cs" />
+    <Compile Include="Models\Profile.cs" />
+    <Compile Include="Models\ProfileViewModels.cs" />
     <Compile Include="Models\Responsibility.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\Position.cs" />
@@ -457,6 +473,7 @@
     <Content Include="Content\themes\bootstrap\bootstrap.less" />
     <Content Include="Content\themes\bootstrap\bootstrap.css.map" />
     <None Include="Properties\PublishProfiles\test.pubxml" />
+    <Content Include="LinkedIn_API_ReadMe.txt" />
     <Content Include="Scripts\backbone.js" />
     <Content Include="Scripts\backbone.min.js" />
     <Content Include="Scripts\bootstrap-datepicker.js" />
@@ -617,6 +634,14 @@
     <Content Include="Views\Shared\EditorTemplates\DateTime.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Boolean.cshtml" />
     <Content Include="Views\Home\Dashboard.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\LinkedInDate.cshtml" />
+    <Content Include="Views\Profile\Create.cshtml" />
+    <Content Include="Views\Profile\Delete.cshtml" />
+    <Content Include="Views\Profile\Details.cshtml" />
+    <Content Include="Views\Profile\Edit.cshtml" />
+    <Content Include="Views\Profile\Index.cshtml" />
+    <Content Include="Views\Profile\ImportLinkedIn.cshtml" />
+    <Content Include="Views\Profile\ImportLinkedInSuccess.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\userfiles\" />
@@ -631,6 +656,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="IdentityMigrations\201509070345502_Initial.resx">
       <DependentUpon>201509070345502_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="IdentityMigrations\201509130336359_WhatNow.resx">
+      <DependentUpon>201509130336359_WhatNow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201404011713386_firstgo.resx">
       <DependentUpon>201404011713386_firstgo.cs</DependentUpon>

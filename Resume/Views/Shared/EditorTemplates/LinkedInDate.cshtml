@@ -1,0 +1,9 @@
+﻿@model LinkedIn.Api.Client.Core.Profiles.LinkedInDate
+
+@{ DateTime value = DateTime.Today; }
+@if(Model != null)
+{
+    value = new DateTime(Model.Year.Value, Model.Month ?? 1, Model.Day ?? 1);
+}
+
+@Html.EditorFor(m => value)

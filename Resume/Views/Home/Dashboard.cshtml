@@ -1,10 +1,11 @@
-﻿@{
+﻿@model Resume.Models.Profile
+@{
     ViewBag.Title = @ViewBag.User;
 }
 
 <div class="jumbotron">
-    <h1>Joshua Slaven</h1>
-    <p>Programmer, problem solver, all around doer of the stuffs unless not.</p>
+    <h1>@Model.FirstName @Model.LastName</h1>
+    <p>@Model.Summary</p>
 </div>
 
 <div class="row">

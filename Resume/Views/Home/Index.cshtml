@@ -58,7 +58,6 @@
 
                     var series = [];
                     _.each(positions, function (position, index, list) {
-                        debugger;
                         var responsibilites = position.Responsibilities;
                         var experiences = _(responsibilites).map(function (responsibility) { return responsibility.Experiences; });
                         var flatExperiences = _.flatten(experiences);

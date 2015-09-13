@@ -10,6 +10,16 @@ using Resume.Models;
 using NHibernate;
 using NHibernate.Linq;
 
+using Microsoft.Owin.Security;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+using LinkedIn.Api.Client.Owin;
+using LinkedIn.Api.Client.Owin.Profiles;
+using System.Security.Claims;
+using Microsoft.AspNet.Identity.EntityFramework;
+using LinkedIn.Api.Client.Core.Profiles;
+using System.Threading.Tasks;
+
 namespace Resume.Controllers
 {
     [Authorize]
@@ -63,8 +73,12 @@ namespace Resume.Controllers
 
             if (ModelState.IsValid)
             {
-                db.Save(position);
-                return RedirectToAction("Index");
+                using(var tx = db.BeginTransaction())
+                {
+                    db.Save(position);
+                    tx.Commit();
+                }
+                return RedirectToAction("Details", new { id = position.Id });
             }
 
             return View(position);

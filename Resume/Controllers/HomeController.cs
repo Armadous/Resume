@@ -1,4 +1,7 @@
-﻿using System;
+﻿using NHibernate;
+using NHibernate.Linq;
+using Resume.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,6 +11,12 @@ namespace Resume.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly ISession db;
+        public HomeController(ISession session)
+        {
+            db = session;
+        }   
+
         public ActionResult Index()
         {
             ViewBag.User = "DemoUser";
@@ -17,7 +26,8 @@ namespace Resume.Controllers
         public ActionResult Dashboard(string user)
         {
             ViewBag.User = user;
-            return View();
+            var profile = db.Query<Profile>().SingleOrDefault(p => p.OwnerIdentity == User.Identity.Name) ?? new Profile();
+            return View(profile);
         }
 
         public ActionResult About()
