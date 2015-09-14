@@ -17,7 +17,6 @@ using NHibernate.Linq;
 
 namespace Resume.api
 {
-    [Authorize]
     public class UserFileController : ApiController
     {
         private readonly ISession db;
@@ -27,6 +26,7 @@ namespace Resume.api
         }
 
         // GET api/UserFile
+        [Authorize]
         public IQueryable<UserFile> GetUserFiles()
         {
             return db.Query<UserFile>().Where(f => f.OwnerIdentity == User.Identity.Name);
@@ -52,6 +52,7 @@ namespace Resume.api
 
         // POST api/UserFile
         [ResponseType(typeof(UserFile))]
+        [Authorize]
         public async Task<IHttpActionResult> PostUserFile()
         {
             HttpRequestMessage request = this.Request;
@@ -86,6 +87,7 @@ namespace Resume.api
 
         // DELETE api/UserFile/5
         [ResponseType(typeof(UserFile))]
+        [Authorize]
         public IHttpActionResult DeleteUserFile(int id)
         {
             UserFile userfile = db.Get<UserFile>(id);
