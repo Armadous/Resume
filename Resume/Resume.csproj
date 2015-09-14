@@ -472,6 +472,9 @@
     <Content Include="Content\themes\bootstrap\bootstrap-filebutton.less" />
     <Content Include="Content\themes\bootstrap\bootstrap.less" />
     <Content Include="Content\themes\bootstrap\bootstrap.css.map" />
+    <Content Include="App_Data\userfiles\DONOTDELETE">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Properties\PublishProfiles\test.pubxml" />
     <Content Include="LinkedIn_API_ReadMe.txt" />
     <Content Include="Scripts\backbone.js" />
@@ -645,9 +648,7 @@
     <Content Include="Views\Profile\ImportLinkedIn.cshtml" />
     <Content Include="Views\Profile\ImportLinkedInSuccess.cshtml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\userfiles\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
