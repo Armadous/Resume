@@ -1,10 +1,18 @@
-﻿@{
-    ViewBag.Title = "Joshua Slaven";
+﻿@model Resume.Models.Profile
+@{
+    ViewBag.Title = string.Format("{0} {1}", Model.FirstName, Model.LastName);
 }
 
 <div class="jumbotron">
-    <h1>@Model.FirstName @Model.LastName</h1>
-    <p>@Model.Summary</p>
+    <div class="row">
+        <div class="col-md-2">
+            @Html.DisplayFor(model => model.PorfilePicture, "UserFile")
+        </div>
+        <div class="col-md-10">
+            <h1>@Model.FirstName @Model.LastName</h1>
+            <p>@Model.Summary</p>
+        </div>
+    </div>
 </div>
 
 <div class="row">

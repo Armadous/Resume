@@ -14,5 +14,9 @@ namespace Resume.Models
         public virtual string Summary { get; set; }
 
         public virtual string OwnerIdentity { get; set; }
+
+        public virtual UserFile PorfilePicture { get; set; }
+
+        public virtual int? PorfilePictureId { get; set; }
     }
 }

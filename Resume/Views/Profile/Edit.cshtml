@@ -15,6 +15,12 @@
         @Html.HiddenFor(model => model.Id)
 
         <div class="form-group">
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.PorfilePictureId, "UserFile")
+            </div>
+        </div>
+
+        <div class="form-group">
             <div class="col-md-3">
                 @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })

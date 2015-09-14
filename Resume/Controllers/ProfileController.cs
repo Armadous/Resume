@@ -45,13 +45,17 @@ namespace Resume.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,FirstName,LastName,Summary")] Profile profile)
+        public ActionResult Edit([Bind(Include = "Id,FirstName,LastName,Summary,PorfilePictureId")] Profile profile)
         {
             if (ModelState.IsValid)
             {
+                profile.OwnerIdentity = User.Identity.Name;
+
+                // Connect the user file
+                var file = db.Get<UserFile>(profile.PorfilePictureId);
+                profile.PorfilePicture = file;
                 using(var tx = db.BeginTransaction())
                 {
-                    profile.OwnerIdentity = User.Identity.Name;
                     db.SaveOrUpdate(profile);
                     tx.Commit();
                 }
