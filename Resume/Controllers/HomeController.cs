@@ -19,8 +19,10 @@ namespace Resume.Controllers
 
         public ActionResult Index()
         {
-            ViewBag.User = "DemoUser";
-            return View();
+            // I'm being vane, Put me on the landing page
+            ViewBag.user = "JoshSlaven";
+            var profile = db.Query<Profile>().SingleOrDefault(p => p.OwnerIdentity == "JoshSlaven") ?? new Profile();
+            return View(profile);
         }
 
         public ActionResult Dashboard(string user)

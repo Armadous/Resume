@@ -1,7 +1,7 @@
 ﻿@model Resume.Models.Experience
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Create Experience";
 }
 
 @section Styles {
@@ -23,7 +23,7 @@
                 <legend>Experience</legend>
 
                 <div class="form-group">
-                    @Html.LabelFor(model => model.ResponsibilityId, "ResponsibilityId", new { @class = "control-label col-md-2" })
+                    <label class="control-label col-md-2" for="ResponsibilityId">Responsibility</label>
                     <div class="col-md-10">
                         @Html.DropDownList("ResponsibilityId", null, String.Empty, new { @class = "form-control", @style = "width:100%" })
                         @Html.ValidationMessageFor(model => model.ResponsibilityId)
@@ -31,7 +31,7 @@
                 </div>
 
                 <div class="form-group">
-                    @Html.LabelFor(model => model.SkillId, "SkillId", new { @class = "control-label col-md-2" })
+                    <label class="control-label col-md-2" for="SkillId">Skill</label>
                     <div class="col-md-10">
                         @Html.DropDownList("SkillId", null, String.Empty, new { @class = "form-control", @style = "width:100%" })
                         @Html.ValidationMessageFor(model => model.SkillId)

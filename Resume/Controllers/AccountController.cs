@@ -98,7 +98,9 @@ namespace Resume.Controllers
                 if (result.Succeeded)
                 {
                     await SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Index", "Home");
+
+                    // Direct the user to complete their profile
+                    return RedirectToAction("Edit", "Profile");
                 }
                 else
                 {

@@ -1,6 +1,6 @@
 ﻿@model Resume.Models.Profile
 @{
-    ViewBag.Title = @ViewBag.User;
+    ViewBag.Title = string.Format("{0} {1}", Model.FirstName, Model.LastName);
 }
 
 <div class="jumbotron">
@@ -60,7 +60,6 @@
 
                         var series = [];
                         _.each(positions, function (position, index, list) {
-                            debugger;
                             var responsibilites = position.Responsibilities;
                             var experiences = _(responsibilites).map(function (responsibility) { return responsibility.Experiences; });
                             var flatExperiences = _.flatten(experiences);
