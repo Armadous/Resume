@@ -129,6 +129,8 @@ namespace Resume.Controllers
             {
                 using(var tx = db.BeginTransaction())
                 {
+                    // Maintain relationship
+                    position.Responsibilities = existingPosition.Responsibilities;
                     db.Merge<Position>(position);
                     tx.Commit();
                 }
